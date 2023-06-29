@@ -3,6 +3,7 @@ package leetcode.jzoffer;
 import org.testng.annotations.Test;
 
 import javax.sql.rowset.spi.SyncResolver;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -1724,6 +1725,13 @@ class Solution {
         return true;
     }
 
+    /*
+     * @Description  剑指 Offer II 033. 变位词组
+     * @author   Edison
+     * @date    2023/6/29 15:00
+     * @Param   [strs]
+     * @return  java.util.List<java.util.List<java.lang.String>>
+     */
     public List<List<String>> groupAnagrams(String[] strs) {
         HashMap<String, List<String>> map = new HashMap<>();
         for (String str : strs) {
@@ -1735,6 +1743,275 @@ class Solution {
             map.put(key, list);
         }
         return new ArrayList<>(map.values());
+    }
+
+    /*
+     * @Description  剑指 Offer II 044. 二叉树每层的最大值
+     * @author   Edison
+     * @date    2023/6/29 15:26
+     * @Param   [root]
+     * @return  java.util.List<java.lang.Integer>
+     */
+    public List<Integer> largestValues(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if (root == null) return list;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int max = queue.peek().val;
+            int size = queue.size();
+            while (size-- > 0) {
+                TreeNode node = queue.poll();
+                max = Math.max(max, node.val);
+                if (node.left != null) queue.add(node.left);
+                if (node.right != null) queue.add(node.right);
+            }
+            list.add(max);
+        }
+        return list;
+    }
+
+    /*
+     * @Description  剑指 Offer II 045. 二叉树最底层最左边的值
+     * @author   Edison
+     * @date    2023/6/29 15:36
+     * @Param   [root]
+     * @return  int
+     */
+    public int findBottomLeftValue(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        TreeNode ans = null;
+        while (!queue.isEmpty()) {
+            ans = queue.poll();
+            if (ans.right != null) queue.add(ans.right);
+            if (ans.left != null) queue.add(ans.left);
+        }
+        return ans.val;
+    }
+
+    /*
+     * @Description  剑指 Offer II 046. 二叉树的右侧视图
+     * @author   Edison
+     * @date    2023/6/29 15:46
+     * @Param   [root]
+     * @return  java.util.List<java.lang.Integer>
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if (root == null) return list;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (i == size - 1) list.add(node.val);
+                if (node.left != null) queue.add(node.left);
+                if (node.right != null) queue.add(node.right);
+            }
+        }
+        return list;
+    }
+
+    /*
+     * @Description  剑指 Offer II 047. 二叉树剪枝
+     * @author   Edison
+     * @date    2023/6/29 15:52
+     * @Param   [root]
+     * @return  leetcode.jzoffer.TreeNode
+     */
+    public TreeNode pruneTree(TreeNode root) {
+        if (root == null) return null;
+        root.left = pruneTree(root.left);
+        root.right = pruneTree(root.right);
+        if (root.val == 0 && root.left == null && root.right == null) return null;
+        return root;
+    }
+
+    /*
+     * @Description  剑指 Offer II 049. 从根节点到叶节点的路径数字之和
+     * @author   Edison
+     * @date    2023/6/29 16:10
+     * @Param   [root]
+     * @return  int
+     */
+    public int sumNumbers(TreeNode root) {
+        return dfsSum(root, 0);
+    }
+    int dfsSum(TreeNode root, int sum) {
+        if (root == null) return 0;
+        sum = sum * 10 + root.val;
+        if (root.left == null && root.right == null) return sum;
+        int left = dfsSum(root.left, sum);
+        int right = dfsSum(root.right, sum);
+        return left + right;
+    }
+
+    /*
+     * @Description  剑指 Offer II 050. 向下的路径节点之和     * @author   Edison
+     * @date    2023/6/29 16:31
+     * @Param   [root, targetSum]
+     * @return  int
+     */
+    int count = 0;
+    HashMap<Long, Integer> map1 = new HashMap<>();
+    public int pathSum(TreeNode root, int targetSum) {
+        if (root != null) {
+            map1.put(0L, 1);
+            dfs(root, targetSum, 0l);
+        }
+        return count;
+    }
+    void dfs(TreeNode root, int targetSum, Long sum) {
+        sum += root.val;
+        if (map1.containsKey(sum - targetSum)) count += map1.get(sum - targetSum);
+        map1.put(sum, map1.getOrDefault(sum, 0) + 1);
+        if (root.left != null) dfs(root.left, targetSum, sum);
+        if (root.right != null) dfs(root.right, targetSum, sum);
+        map1.put(sum, map1.get(sum) - 1);
+    }
+
+    /*
+     * @Description  剑指 Offer 14- I. 剪绳子
+     * @author   Edison
+     * @date    2023/6/29 16:50
+     * @Param   [n]
+     * @return  int
+     */
+    public int cuttingRope(int n) {
+        int[] dp = new int[n + 1];
+        dp[2] = 1;
+        for (int i = 3; i <= n; i++) {
+            for (int j = 1; j <= i / 2; j++) {
+                dp[i] = Math.max(dp[i], Math.max(dp[i - j] * j, (i - j) * j));
+            }
+        }
+        return dp[n];
+    }
+
+    /*
+     * @Description  剑指 Offer 14- II. 剪绳子 II
+     * @author   Edison
+     * @date    2023/6/29 16:58
+     * @Param   [n]
+     * @return  int
+     */
+    public int cuttingRope2(int n) {
+        BigInteger[] dp = new BigInteger[n + 1];
+        Arrays.fill(dp, BigInteger.valueOf(1));
+        for (int i = 3; i <= n; i++) {
+            for (int j = 1; j <= i / 2; j++) {
+                dp[i] = dp[i].max(BigInteger.valueOf(j * (i - j))).max(dp[i - j].multiply(BigInteger.valueOf(j)));
+            }
+        }
+        return dp[n].mod(BigInteger.valueOf(1000000007)).intValue();
+    }
+
+    /*
+     * @Description  剑指 Offer 19. 正则表达式匹配
+     * @author   Edison
+     * @date    2023/6/29 17:17
+     * @Param   [s, p]
+     * @return  boolean
+     */
+    public boolean isMatch(String s, String p) {
+        int lenS = s.length() - 1;
+        int lenP = p.length() - 1;
+        int len1 = 0;
+        int len2 = 0;
+        while (lenS >= 0 || lenP >= 0) {
+            while (lenP >= 0 && (p.charAt(lenP) == '*' || p.charAt(lenP) == '.')) {
+                if (p.charAt(lenP) == '*') len1++;
+                if (p.charAt(lenP) == '.') len2++;
+                lenP--;
+            }
+
+        }
+        return true;
+    }
+
+}
+
+/*
+ * @Description  剑指 Offer 41. 数据流中的中位数
+ * @author   Edison
+ * @date    2023/6/29 17:33
+ * @Param
+ * @return
+ */
+class MedianFinder {
+
+    PriorityQueue<Integer> left;
+    PriorityQueue<Integer> right;
+    /** initialize your data structure here. */
+    public MedianFinder() {
+        left = new PriorityQueue<>((n1, n2) -> n2 - n1);
+        right = new PriorityQueue<>();
+    }
+
+    public void addNum(int num) {
+        left.add(num);
+        right.add(left.poll());
+        if (left.size() + 1 < right.size()) {
+            left.add(right.poll());
+        }
+    }
+
+    public double findMedian() {
+        if (right.size() > left.size()) return right.peek();
+        return (double) (right.peek() + left.peek()) / 2;
+    }
+}
+
+/*
+ * @Description  剑指 Offer II 041. 滑动窗口的平均值
+ * @author   Edison
+ * @date    2023/6/29 15:03
+ * @Param
+ * @return  
+ */
+class MovingAverage {
+
+    int size;
+    int sum;
+    LinkedList<Integer> list = new LinkedList<>();
+
+    /** Initialize your data structure here. */
+    public MovingAverage(int size) {
+        this.size = size;
+    }
+
+    public double next(int val) {
+        if (list.size() == size) {
+            sum -= list.removeFirst();
+        }
+        sum += val;
+        list.add(val);
+        return (double) sum / list.size();
+    }
+}
+
+/*
+ * @Description  剑指 Offer II 042. 最近请求次数
+ * @author   Edison
+ * @date    2023/6/29 15:18
+ * @Param
+ * @return  
+ */
+class RecentCounter {
+
+    LinkedList<Integer> list;
+    public RecentCounter() {
+        list = new LinkedList<>();
+    }
+    public int ping(int t) {
+        int min = t - 3000;
+        list.add(t);
+        while (list.getFirst() < min) {
+            list.removeFirst();
+        }
+        return list.size();
     }
 }
 
