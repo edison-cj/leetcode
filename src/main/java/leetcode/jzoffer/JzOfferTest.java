@@ -1927,6 +1927,29 @@ class Solution {
         return ans;
     }
 
+    /*
+     * @Description  剑指 Offer II 017. 含有所有字符的最短字符串
+     * @author   Edison
+     * @date    2023/6/30 14:50
+     * @Param   [s, t]
+     * @return  java.lang.String
+     */
+    public String minWindow(String s, String t) {
+        if (s.length() < t.length()) return "";
+        int[] a = new int[58];
+        int[] b = new int[58];
+        for (char ch : t.toCharArray()) {
+            a[ch - 'A']++;
+        }
+        int left = 0;
+        int right = 0;
+        int count = 0;
+        String res = "";
+        while (right < s.length()) {
+
+        }
+        return res;
+    }
 
 }
 
