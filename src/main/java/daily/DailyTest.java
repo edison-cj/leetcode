@@ -255,6 +255,26 @@ class Solution {
         List<List<Integer>> list = new ArrayList<>();
         return list;
     }
+
+    /*
+     * @Description  2490. 回环句
+     * @author   Edison
+     * @date    2023/6/30 10:24
+     * @Param   [sentence]
+     * @return  boolean
+     */
+    public boolean isCircularSentence(String sentence) {
+        if (sentence.charAt(0) != sentence.charAt(sentence.length() - 1)) return false;
+        for (int i = 0; i < sentence.length(); i++) {
+            while (i < sentence.length() && sentence.charAt(i) != ' ') i++;
+            if (i < sentence.length()) {
+                if (sentence.charAt(i - 1) != sentence.charAt(i + 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
 
 class TreeNode {

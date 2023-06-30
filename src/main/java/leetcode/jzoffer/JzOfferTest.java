@@ -905,15 +905,6 @@ class Solution {
      */
     public int lengthOfLongestSubstring(String s) {
         int length = 0;
-//        Set<Character> set = new HashSet<>();
-//        for (int l = 0, r = 0; r < s.length(); r++) {
-//            char ch = s.charAt(r);
-//            if (set.contains(ch)) {
-//                set.remove(s.charAt(l++));
-//            }
-//            set.add(ch);
-//            length = Math.max(length, r - l + 1);
-//        }
         Map<Character, Integer> map1 = new HashMap<>();
         for (int l = 0, i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
@@ -924,7 +915,6 @@ class Solution {
             length = Math.max(length, i - l + 1);
         }
         return length;
-
     }
 
     /*
@@ -1909,29 +1899,72 @@ class Solution {
     }
 
     /*
-     * @Description  剑指 Offer 19. 正则表达式匹配
+     * @Description  剑指 Offer 43. 1～n 整数中 1 出现的次数
      * @author   Edison
-     * @date    2023/6/29 17:17
-     * @Param   [s, p]
-     * @return  boolean
+     * @date    2023/6/30 10:38
+     * @Param   [n]
+     * @return  int
      */
-    public boolean isMatch(String s, String p) {
-        int lenS = s.length() - 1;
-        int lenP = p.length() - 1;
-        int len1 = 0;
-        int len2 = 0;
-        while (lenS >= 0 || lenP >= 0) {
-            while (lenP >= 0 && (p.charAt(lenP) == '*' || p.charAt(lenP) == '.')) {
-                if (p.charAt(lenP) == '*') len1++;
-                if (p.charAt(lenP) == '.') len2++;
-                lenP--;
-            }
-
+    public int countDigitOne(int n) {
+        List<Integer> list = new ArrayList<>();
+        while (n > 0) {
+            list.add(n % 10);
+            n /= 10;
         }
-        return true;
+        int ans = 0;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            int cur = list.get(i);
+            int left = 0, right = 0, power = 1;
+            for (int j = list.size() - 1; j > i; j--) left = left * 10 + list.get(j);
+            for (int j = i - 1; j >= 0; j--) {
+                right = right * 10 + list.get(j);
+                power *= 10;
+            }
+            if (cur == 0) ans += left * power;
+            else if (cur == 1) ans += left * power + right + 1;
+            else ans += (left + 1) * power;
+        }
+        return ans;
     }
 
+
 }
+
+/*
+ * @Description  剑指 Offer 59 - II. 队列的最大值
+ * @author   Edison
+ * @date    2023/6/30 11:07
+ * @Param
+ * @return  
+ */
+class MaxQueue {
+
+    Queue<Integer> queue;
+    Deque<Integer> deque;
+    public MaxQueue() {
+        this.queue = new LinkedList<>();
+        this.deque = new LinkedList<>();
+    }
+
+    public int max_value() {
+        if (!deque.isEmpty()) return deque.peek();
+        return -1;
+    }
+
+    public void push_back(int value) {
+        queue.offer(value);
+        while (!deque.isEmpty() && value > deque.peekLast()) deque.pollLast();
+        deque.offer(value);
+    }
+
+    public int pop_front() {
+        if (queue.isEmpty()) return -1;
+        int val = queue.poll();
+        if (deque.peekFirst() == val) deque.pop();
+        return val;
+    }
+}
+
 
 /*
  * @Description  剑指 Offer 41. 数据流中的中位数

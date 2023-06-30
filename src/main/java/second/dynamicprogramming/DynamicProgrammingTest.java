@@ -250,6 +250,73 @@ class Solution {
         return dp[amount];
     }
 
+    /*
+     * @Description  377. 组合总和 Ⅳ
+     * @author   Edison
+     * @date    2023/6/30 9:33
+     * @Param   [nums, target]
+     * @return  int
+     */
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for (int i = 0; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (i >= nums[j]) {
+                    dp[i] += dp[i - nums[j]];
+                }
+            }
+        }
+        return dp[target];
+    }
+
+    /*
+     * @Description  322. 零钱兑换
+     * @author   Edison
+     * @date    2023/6/30 9:50
+     * @Param   [coins, amount]
+     * @return  int
+     */
+    public int coinChange(int[] coins, int amount) {
+        int max = Integer.MAX_VALUE;
+        int[] dp = new int[amount + 1];
+        for (int i = 0; i <= amount; i++) {
+            dp[i] = max;
+        }
+        dp[0] = 0;
+        for (int i = 0; i < coins.length; i++) {
+            for (int j = coins[i]; j <= amount; j++) {
+                if (dp[j - coins[i]] != max) {
+                    dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+                }
+            }
+        }
+        return dp[amount] == max ? -1 : dp[amount];
+    }
+
+    /*
+     * @Description  279. 完全平方数
+     * @author   Edison
+     * @date    2023/6/30 10:06
+     * @Param   [n]
+     * @return  int
+     */
+    public int numSquares(int n) {
+        int max = Integer.MAX_VALUE;
+        int[] dp = new int[n + 1];
+        for (int i = 1; i < n + 1; i++) {
+            dp[i] = max;
+
+        }
+        dp[0] = 0;
+        for (int i = 1; i * i <= n; i++) {
+            for (int j = i * i; j <= n; j++) {
+                dp[j] = Math.min(dp[j], dp[j - i * i] + 1);
+            }
+        }
+        return dp[n];
+    }
+
 }
 
 class ListNode {
