@@ -1951,6 +1951,66 @@ class Solution {
         return res;
     }
 
+    /*
+     * @Description  剑指 Offer II 028. 展平多级双向链表
+     * @author   Edison
+     * @date    2023/7/4 17:42
+     * @Param   [head]
+     * @return  leetcode.jzoffer.Node
+     */
+    public Node2 flatten(Node2 head) {
+        return dfs(head);
+    }
+    Node2 dfs(Node2 head) {
+        Node2 last = head;
+        while (head != null) {
+            Node2 next = head.next;
+            if (head.child != null) {
+                Node2 childLast = dfs(head.child);
+                head.next = head.child;
+                head.child.prev = head;
+                head.child = null;
+                if (next != null) {
+                    childLast.next = next;
+                    next.prev = childLast;
+                }
+                last = childLast;
+            } else {
+                last = head;
+            }
+            head = next;
+        }
+        return last;
+    }
+
+    /*
+     * @Description  TDOO
+     * @author   Edison
+     * @date    2023/7/4 18:26
+     * @Param   [root]
+     * @return  leetcode.jzoffer.TreeNode
+     */
+    TreeNode ans = null;
+    public TreeNode increasingBST(TreeNode root) {
+        dfs(root);
+        return ans;
+    }
+    void dfs(TreeNode root) {
+        if (root == null) return;
+        dfs(root.right);
+        root.right = ans;
+        ans = root;
+        dfs(root.left);
+        root.left = null;
+    }
+
+}
+
+class Node2 {
+    public int val;
+    public Node2 prev;
+    public Node2 next;
+    public Node2 child;
 }
 
 /*

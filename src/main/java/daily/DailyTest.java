@@ -275,6 +275,28 @@ class Solution {
         }
         return true;
     }
+
+    /*
+     * @Description  2679. 矩阵中的和
+     * @author   Edison
+     * @date    2023/7/4 17:26
+     * @Param   [nums]
+     * @return  int
+     */
+    public int matrixSum(int[][] nums) {
+        int score = 0;
+        for (int[] num : nums) {
+            Arrays.sort(num);
+        }
+        for (int i = 0; i < nums[0].length; i++) {
+            int max = 0;
+            for (int j = 0; j < nums.length; j++) {
+                max = Math.max(max, nums[j][i]);
+            }
+            score += max;
+        }
+        return score;
+    }
 }
 
 class TreeNode {

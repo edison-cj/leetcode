@@ -1,5 +1,7 @@
 package second.dynamicprogramming;
 
+import java.util.List;
+
 /**
  * @version 1.0
  * @Description:
@@ -317,8 +319,132 @@ class Solution {
         return dp[n];
     }
 
+    /*
+     * @Description  139. 单词拆分
+     * @author   Edison
+     * @date    2023/7/4 16:00
+     * @Param   [s, wordDict]
+     * @return  boolean
+     */
+    public boolean wordBreak(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 1; i <= s.length(); i++) {
+            for (String word : wordDict) {
+                int len = word.length();
+                if (i >= len && dp[i - len] && word.equals(s.substring(i - len, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+    /*
+     * @Description  198. 打家劫舍
+     * @author   Edison
+     * @date    2023/7/4 16:30
+     * @Param   [nums]
+     * @return  int
+     */
+    public int rob(int[] nums) {
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+        for (int i = 2; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        }
+        return dp[nums.length - 1];
+    }
+
+    /*
+     * @Description  213. 打家劫舍 II
+     * @author   Edison
+     * @date    2023/7/4 16:35
+     * @Param   [nums]
+     * @return  int
+     */
+    public int rob2(int[] nums) {
+        if (nums.length == 1) return nums[0];
+        int res1 = range(nums, 0, nums.length - 2);
+        int res2 = range(nums, 1, nums.length - 1);
+        return Math.max(res1, res2);
+    }
+    int range(int[] nums, int start, int end) {
+        if (end == start) return nums[start];
+        int[] dp = new int[nums.length];
+        dp[start] = nums[start];
+        dp[start + 1] = Math.max(nums[start], nums[start + 1]);
+        for (int i = start + 2; i <= end; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+        }
+        return dp[end];
+    }
+
+    /*
+     * @Description  337. 打家劫舍 III
+     * @author   Edison
+     * @date    2023/7/4 16:45
+     * @Param   [root]
+     * @return  int
+     */
+    public int rob(TreeNode root) {
+        int[] res = robAction(root);
+        return Math.max(res[0], res[1]);
+    }
+    int[] robAction(TreeNode root) {
+        int[] res = new int[2];
+        if (root == null) return res;
+        int[] left = robAction(root.left);
+        int[] right = robAction(root.right);
+        res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        res[1] = root.val + left[0] + right[0];
+        return res;
+    }
+
+    /*
+     * @Description  121. 买卖股票的最佳时机
+     * @author   Edison
+     * @date    2023/7/4 17:04
+     * @Param   [prices]
+     * @return  int
+     */
+    public int maxProfit(int[] prices) {
+        int[][] dp = new int[prices.length][2];
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], -prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], prices[i] + dp[i - 1][0]);
+        }
+        return dp[prices.length - 1][1];
+    }
+
 }
 
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode() {
+
+    }
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+
+    public TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
 class ListNode {
     int val;
     ListNode next;
