@@ -1984,7 +1984,7 @@ class Solution {
     }
 
     /*
-     * @Description  TDOO
+     * @Description  剑指 Offer II 052. 展平二叉搜索树
      * @author   Edison
      * @date    2023/7/4 18:26
      * @Param   [root]
@@ -2004,8 +2004,150 @@ class Solution {
         root.left = null;
     }
 
+    /*
+     * @Description  剑指 Offer II 029. 排序的循环链表
+     * @author   Edison
+     * @date    2023/7/5 15:28
+     * @Param   [head, insertVal]
+     * @return  leetcode.jzoffer.Node3
+     */
+    public Node3 insert(Node3 head, int insertVal) {
+        //空节点
+        if (head == null) {
+            Node3 node = new Node3(insertVal);
+            node.next = node;
+            return node;
+        }
+        //只有一个节点
+        if (head.next == head) {
+            head.next = new Node3(insertVal, head.next);
+            return head;
+        }
+        Node3 cur = head;
+        do {
+            if (cur.next.val >= cur.val) {
+                if (cur.next.val >= insertVal && cur.val <= insertVal) {
+                    cur.next = new Node3(insertVal, cur.next);
+                    return head;
+                }
+            } else {
+                if (cur.next.val > insertVal || insertVal > cur.val) {
+                    cur.next = new Node3(insertVal, cur.next);
+                    return head;
+                }
+            }
+            cur = cur.next;
+        } while (cur != head);
+        head.next = new Node3(insertVal, head.next);
+        return head;
+    }
+
 }
 
+/*
+ * @Description  剑指 Offer II 031. 最近最少使用缓存
+ * @author   Edison
+ * @date    2023/7/5 16:12
+ * @Param
+ * @return  
+ */
+class LRUCache {
+
+    HashMap<Integer, Integer> map;
+    Queue<Integer> queue;
+    int capacity;
+
+    public LRUCache(int capacity) {
+        map = new HashMap<>(capacity);
+        this.capacity = capacity;
+        queue = new ArrayDeque<>();
+    }
+
+    public int get(int key) {
+        if (map.containsKey(key)) {
+            queue.remove(key);
+            queue.offer(key);
+            return map.get(key);
+        }
+        return -1;
+    }
+
+    public void put(int key, int value) {
+        if (map.containsKey(key)) {
+            queue.remove(key);
+        } else {
+            if (queue.size() == capacity) {
+                map.remove(queue.peek());
+                queue.poll();
+            }
+        }
+        queue.offer(key);
+        map.put(key, value);
+    }
+}
+
+/*
+ * @Description  剑指 Offer II 030. 插入、删除和随机访问都是 O(1) 的容器
+ * @author   Edison
+ * @date    2023/7/5 15:29
+ * @Param   
+ * @return  
+ */
+class RandomizedSet {
+
+    HashMap<Integer, Integer> map;
+    List<Integer> list;
+    Random random = new Random();
+    int size;
+    /** Initialize your data structure here. */
+    public RandomizedSet() {
+        map = new HashMap<>();
+        list = new ArrayList<>();
+        size = 0;
+    }
+
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        if (map.containsKey(val)) return false;
+        map.put(val, size++);
+        list.add(val);
+        return true;
+    }
+
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        if (!map.containsKey(val)) return false;
+        int index = map.get(val);
+        int last = list.get(--size);
+        list.set(index, last);
+        map.put(last, index);
+        list.remove(size);
+        map.remove(val);
+        return true;
+    }
+
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return list.get(random.nextInt(size));
+    }
+}
+
+class Node3 {
+    int val;
+    Node3 next;
+
+    public Node3() {
+    }
+
+    public Node3(int val) {
+        this.val = val;
+    }
+
+    public Node3(int val, Node3 next) {
+        this.val = val;
+        this.next = next;
+    }
+}
 class Node2 {
     public int val;
     public Node2 prev;

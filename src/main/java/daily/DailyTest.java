@@ -297,6 +297,29 @@ class Solution {
         }
         return score;
     }
+
+    /*
+     * @Description  2600. K 件物品的最大和
+     * @author   Edison
+     * @date    2023/7/5 10:46
+     * @Param   [numOnes, numZeros, numNegOnes, k]
+     * @return  int
+     */
+    public int kItemsWithMaximumSum(int numOnes, int numZeros, int numNegOnes, int k) {
+        int ans = 0;
+        while (k > 0 && numOnes-- > 0) {
+            k--;
+            ans++;
+        }
+        while (k > 0 && numZeros-- > 0) {
+            k--;
+        }
+        while (k > 0 && numNegOnes-- > 0) {
+            k--;
+            ans--;
+        }
+        return ans;
+    }
 }
 
 class TreeNode {

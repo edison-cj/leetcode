@@ -424,6 +424,86 @@ class Solution {
         return dp[prices.length - 1][1];
     }
 
+    /*
+     * @Description  122. 买卖股票的最佳时机 II
+     * @author   Edison
+     * @date    2023/7/5 9:26
+     * @Param   [prices]
+     * @return  int
+     */
+    public int maxProfit2(int[] prices) {
+        int[][] dp = new int[prices.length][2];
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] - prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] + prices[i]);
+        }
+        return dp[prices.length - 1][1];
+    }
+
+    /*
+     * @Description  123. 买卖股票的最佳时机 III
+     * @author   Edison
+     * @date    2023/7/5 9:41
+     * @Param   [prices]
+     * @return  int
+     */
+    public int maxProfit3(int[] prices) {
+        int[][] dp = new int[prices.length][5];
+        dp[0][1] = -prices[0];
+        dp[0][3] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+            dp[i][2] = Math.max(dp[i - 1][2], dp[i - 1][1] + prices[i]);
+            dp[i][3] = Math.max(dp[i - 1][3], dp[i - 1][2] - prices[i]);
+            dp[i][4] = Math.max(dp[i - 1][4], dp[i - 1][3] + prices[i]);
+        }
+        return dp[prices.length - 1][4];
+    }
+
+    /*
+     * @Description  188. 买卖股票的最佳时机 IV
+     * @author   Edison
+     * @date    2023/7/5 10:06
+     * @Param   [k, prices]
+     * @return  int
+     */
+    public int maxProfit(int k, int[] prices) {
+        int[][] dp = new int[prices.length][2 * k + 1];
+        for (int i = 1; i < 2 * k + 1; i += 2) {
+            dp[0][i] = -prices[0];
+        }
+        for (int i = 1; i < prices.length; i++) {
+            for (int j = 1; j < 2 * k + 1; j++) {
+                if (j % 2 == 1) {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - 1] - prices[i]);
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - 1] + prices[i]);
+                }
+            }
+        }
+        return dp[prices.length - 1][2 * k];
+    }
+
+    /*
+     * @Description  309. 最佳买卖股票时机含冷冻期
+     * @author   Edison
+     * @date    2023/7/5 10:13
+     * @Param   [prices]
+     * @return  int
+     */
+    public int maxProfit4(int[] prices) {
+        int[][] dp = new int[prices.length][4];
+        dp[0][0] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], Math.max(dp[i - 1][3] - prices[i], dp[i - 1][1] - prices[i]));
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][3]);
+            dp[i][2] = dp[i - 1][0] + prices[i];
+            dp[i][3] = dp[i - 1][2];
+        }
+        return Math.max(dp[prices.length - 1][3], Math.max(dp[prices.length - 1][2], dp[prices.length - 1][1]));
+    }
 }
 
 class TreeNode {
