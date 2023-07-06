@@ -504,6 +504,11 @@ class Solution {
         }
         return Math.max(dp[prices.length - 1][3], Math.max(dp[prices.length - 1][2], dp[prices.length - 1][1]));
     }
+
+
+    public int maxProfit(int[] prices, int fee) {
+        return 1;
+    }
 }
 
 class TreeNode {
