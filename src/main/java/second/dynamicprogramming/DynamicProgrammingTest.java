@@ -1,5 +1,6 @@
 package second.dynamicprogramming;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -504,9 +505,72 @@ class Solution {
         }
         return Math.max(dp[prices.length - 1][3], Math.max(dp[prices.length - 1][2], dp[prices.length - 1][1]));
     }
-
-
+    
+    /*
+     * @description: 714.买卖股票的最佳时机含手续费
+     * @author: edison 
+     * @date: 2023/7/6 10:08
+     * @param: [prices, fee]
+     * @return: int
+     */
     public int maxProfit(int[] prices, int fee) {
+        int[][] dp = new int[prices.length][2];
+        dp[0][0]  = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] - prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] + prices[i] - fee);
+        }
+        return Math.max(dp[prices.length - 1][1], dp[prices.length - 1][0]);
+    }
+
+    /*
+     * @description: 300. 最长递增子序列
+     * @author: edison
+     * @date: 2023/7/6 10:29
+     * @param: [nums]
+     * @return: int
+     */
+    public int lengthOfLIS(int[] nums) {
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, 1);
+        int res = 0;
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            if (dp[i] > res) res = dp[i];
+        }
+        return dp[nums.length - 1];
+    }
+
+    /*
+     * @description: 674. 最长连续递增序列
+     * @author: edison
+     * @date: 2023/7/6 10:44
+     * @param: [nums]
+     * @return: int
+     */
+    public int findLengthOfLCIS(int[] nums) {
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, 1);
+        int res = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > nums[i - 1]) dp[i] = dp[i - 1] + 1;
+            if (dp[i] > res) res = dp[i];
+        }
+        return res;
+    }
+
+    /*
+     * @description: 718. 最长重复子数组
+     * @author: edison
+     * @date: 2023/7/6 10:50
+     * @param: [nums1, nums2]
+     * @return: int
+     */
+    public int findLength(int[] nums1, int[] nums2) {
         return 1;
     }
 }
