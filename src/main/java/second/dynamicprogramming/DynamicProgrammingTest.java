@@ -581,6 +581,84 @@ class Solution {
         }
         return res;
     }
+
+    /*
+     * @description: 1143. 最长公共子序列
+     * @author: edison
+     * @date: 2023/7/7 9:36
+     * @param: [text1, text2]
+     * @return: int
+     */
+    public int longestCommonSubsequence(String text1, String text2) {
+        int[][] dp = new int[text1.length() + 1][text2.length() + 1];
+        for (int i = 1; i <= text1.length(); i++) {
+            for (int j = 1; j <= text2.length(); j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[text1.length()][text2.length()];
+    }
+
+    /*
+     * @description: 1035. 不相交的线
+     * @author: edison
+     * @date: 2023/7/7 10:29
+     * @param: [nums1, nums2]
+     * @return: int
+     */
+    public int maxUncrossedLines(int[] nums1, int[] nums2) {
+        int[][] dp = new int[nums1.length + 1][nums2.length + 1];
+        for (int i = 1; i <= nums1.length; i++) {
+            for (int j = 1; j <= nums2.length; j++) {
+                if (nums1[i - 1] == nums2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[nums1.length][nums2.length];
+    }
+
+    /*
+     * @description: 53. 最大子数组和
+     * @author: edison 
+     * @date: 2023/7/7 10:57
+     * @param: [nums]
+     * @return: int
+     */
+    public int maxSubArray(int[] nums) {
+        int[] dp = new int[nums.length];
+        int ans = nums[0];
+        dp[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1] + nums[i], nums[i]);
+            if (dp[i] > ans) ans = dp[i];
+        }
+        return ans;
+    }
+
+    /*
+     * @description: 392. 判断子序列
+     * @author: edison
+     * @date: 2023/7/7 11:03
+     * @param: [s, t]
+     * @return: boolean
+     */
+    public boolean isSubsequence(String s, String t) {
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 1; j <= t.length(); j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1] + 1;
+                else dp[i][j] = dp[i][j - 1];
+            }
+        }
+        return dp[s.length()][t.length()] == s.length();
+    }
 }
 
 class TreeNode {

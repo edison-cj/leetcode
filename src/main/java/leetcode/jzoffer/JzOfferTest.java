@@ -2130,6 +2130,35 @@ class RandomizedSet {
     public int getRandom() {
         return list.get(random.nextInt(size));
     }
+
+    /*
+     * @description: 剑指 Offer II 036. 后缀表达式
+     * @author: edison
+     * @date: 2023/7/7 11:42
+     * @param: [tokens]
+     * @return: int
+     */
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> stack = new Stack<>();
+        for (String token : tokens) {
+            switch (token) {
+                case "+" : stack.add(stack.pop() + stack.pop());
+                    break;
+                case "-" : stack.add(-stack.pop() + stack.pop());
+                    break;
+                case "*" : stack.add(stack.pop() * stack.pop());
+                    break;
+                case "/" : int num1 = stack.pop();
+                    int num2 = stack.pop();
+                    stack.add(num2 / num1);
+                    break;
+                default:
+                    stack.add(Integer.valueOf(token));
+                    break;
+            }
+        }
+        return stack.peek();
+    }
 }
 
 class Node3 {
