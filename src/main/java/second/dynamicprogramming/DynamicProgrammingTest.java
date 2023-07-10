@@ -659,6 +659,127 @@ class Solution {
         }
         return dp[s.length()][t.length()] == s.length();
     }
+
+    /*
+     * @description: 115.不同的子序列
+     * @author: edison
+     * @date: 2023/7/10 10:13
+     * @param: [s, t]
+     * @return: int
+     */
+    public int numDistinct(String s, String t) {
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for (int i = 0; i <= s.length(); i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 1; j <= t.length(); j++) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[s.length()][t.length()];
+    }
+
+    /*
+     * @description: 583. 两个字符串的删除操作
+     * @author: edison
+     * @date: 2023/7/10 10:13
+     * @param: [word1, word2]
+     * @return: int
+     */
+    public int minDistance(String word1, String word2) {
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        for (int i = 0; i <= word1.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= word2.length(); j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1);
+                }
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
+
+    /*
+     * @description: 72. 编辑距离
+     * @author: edison
+     * @date: 2023/7/10 10:15
+     * @param: [word1, word2]
+     * @return: int
+     */
+    public int minDistance2(String word1, String word2) {
+        int[][] dp = new int[word1.length() + 1][word2.length() + 1];
+        for (int i = 0; i <= word1.length(); i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= word2.length(); j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i <= word1.length(); i++) {
+            for (int j = 1; j <= word2.length(); j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j] + 1, Math.min(dp[i][j - 1] + 1, dp[i - 1][j - 1] + 1));
+                }
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
+
+    /*
+     * @description: 647. 回文子串
+     * @author: edison 
+     * @date: 2023/7/10 10:39
+     * @param: [s]
+     * @return: int
+     */
+    public int countSubstrings(String s) {
+        int res = 0;
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i; j < s.length(); j++) {
+                if (s.charAt(j) == s.charAt(i) && (j - i <= 1 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /*
+     * @description: 516. 最长回文子序列
+     * @author: edison 
+     * @date: 2023/7/10 10:59
+     * @param: [s]
+     * @return: int
+     */
+    public int longestPalindromeSubseq(String s) {
+        int[][] dp = new int[s.length()][s.length()];
+        for (int i = s.length() - 1; i >= 0; i--) {
+            dp[i][i] = 1;
+            for (int j = i + 1; j < s.length(); j++) {
+                if (s.charAt(j) == s.charAt(i)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[0][s.length() - 1];
+    }
 }
 
 class TreeNode {

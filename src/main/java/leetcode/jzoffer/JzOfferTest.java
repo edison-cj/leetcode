@@ -79,86 +79,6 @@ public class JzOfferTest {
 
 }
 
-class ListNode {
-    int val;
-    ListNode next;
-
-    public ListNode() {
-    }
-
-    public ListNode(int val) {
-        this.val = val;
-    }
-
-    public ListNode(int val, ListNode next) {
-        this.val = val;
-        this.next = next;
-    }
-}
-
-class CQueue {
-
-    Stack<Integer> stack1;
-    Stack<Integer> stack2;
-
-    public CQueue() {
-        stack1 = new Stack<>();
-        stack2 = new Stack<>();
-    }
-
-    public void appendTail(int value) {
-        stack1.add(value);
-    }
-
-    public int deleteHead() {
-        if (stack2.isEmpty()) {
-            if (stack1.isEmpty()) {
-                return -1;
-            }
-            else {
-                while (!stack1.isEmpty()) {
-                    stack2.push(stack1.pop());
-                }
-                return stack2.pop();
-            }
-        }
-        return stack2.pop();
-    }
-
-    public int majorityElement(int[] nums) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int num : nums) {
-            map.put(num, map.getOrDefault(num, 0) + 1);
-            if (map.get(num) > nums.length / 2) {
-                return num;
-            }
-        }
-        return -1;
-    }
-
-
-}
-
-class TreeNode {
-
-    int val;
-    TreeNode left;
-    TreeNode right;
-
-    public TreeNode() {
-    }
-
-    public TreeNode(int val) {
-        this.val = val;
-    }
-
-    public TreeNode(int val, TreeNode left, TreeNode right) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
-}
-
 class Solution {
 
     /*
@@ -2042,6 +1962,62 @@ class Solution {
         return head;
     }
 
+    /*
+     * @description: 剑指 Offer II 038. 每日温度
+     * @author: edison 
+     * @date: 2023/7/10 11:24
+     * @param: [temperatures]
+     * @return: int[]
+     */
+    public int[] dailyTemperatures(int[] temperatures) {
+        int[] res = new int[temperatures.length];
+        Deque<Integer> stack = new LinkedList<>();
+        for (int i = 0; i < temperatures.length; i++) {
+            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {
+                res[stack.peek()] = i - stack.peek();
+                stack.poll();
+            }
+            stack.push(i);
+        }
+        return res;
+    }
+
+    /*
+     * @description: 剑指 Offer II 053. 二叉搜索树中的中序后继
+     * @author: edison 
+     * @date: 2023/7/10 11:40
+     * @param: [root, p]
+     * @return: leetcode.jzoffer.TreeNode
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        TreeNode res = null;
+        while (root != null) {
+            if (root.val > p.val) {
+                res = root;
+                root = root.left;
+            } else {
+                root = root.right;
+            }
+        }
+        return res;
+    }
+
+    /*
+     * @description: 剑指 Offer II 054. 所有大于等于节点的值之和
+     * @author: edison 
+     * @date: 2023/7/10 11:50
+     * @param: [root]
+     * @return: leetcode.jzoffer.TreeNode
+     */
+    int preSum = 0;
+    public TreeNode convertBST(TreeNode root) {
+        if (root == null) return root;
+        convertBST(root.right);
+        root.val += preSum;
+        preSum = root.val;
+        convertBST(root.left);
+        return root;
+    }
 }
 
 /*
@@ -2158,6 +2134,77 @@ class RandomizedSet {
             }
         }
         return stack.peek();
+    }
+
+    /*
+     * @description: 剑指 Offer II 037. 小行星碰撞
+     * @author: edison
+     * @date: 2023/7/7 16:11
+     * @param: [asteroids]
+     * @return: int[]
+     */
+    public int[] asteroidCollision(int[] asteroids) {
+        Stack<Integer> stack = new Stack<>();
+        stack.push(asteroids[0]);
+        Gread1:
+        for (int i = 1; i < asteroids.length; i++) {
+            int cur = asteroids[i];
+            while (!stack.isEmpty() && cur < 0 && stack.peek() > 0) {
+                if (-cur > stack.peek()) {
+                    stack.pop();
+                } else if (-cur < stack.peek()) {
+                    continue Gread1;
+                } else if (-cur == stack.peek()) {
+                    stack.pop();
+                    continue Gread1;
+                }
+            }
+            stack.push(cur);
+        }
+        int[] res = new int[stack.size()];
+        for (int i = stack.size() - 1; i >= 0; i--) {
+            res[i] = stack.pop();
+        }
+        return res;
+    }
+}
+
+/*
+ * @description: 剑指 Offer II 043. 往完全二叉树添加节点
+ * @author: edison
+ * @date: 2023/7/7 15:46
+ * @param:
+ * @return:
+ */
+class CBTInserter {
+
+    TreeNode root;
+    Queue<TreeNode> queue = new LinkedList<>();
+    public CBTInserter(TreeNode root) {
+        this.root = root;
+        queue.offer(root);
+        while (queue.peek().left != null && queue.peek().right != null) {
+            TreeNode node = queue.poll();
+            queue.offer(node.left);
+            queue.offer(node.right);
+        }
+    }
+
+    public int insert(int v) {
+        TreeNode node = queue.peek();
+        if (node.left == null) {
+            node.left = new TreeNode(v);
+        } else {
+            node.right = new TreeNode(v);
+            queue.poll();
+            queue.offer(node.left);
+            queue.offer(node.right);
+        }
+        return node.val;
+    }
+
+    public TreeNode get_root() {
+        return root;
     }
 }
 
@@ -2396,6 +2443,86 @@ class Node {
     }
 
     public Node(int val, Node left, Node right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    public ListNode() {
+    }
+
+    public ListNode(int val) {
+        this.val = val;
+    }
+
+    public ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
+}
+
+class CQueue {
+
+    Stack<Integer> stack1;
+    Stack<Integer> stack2;
+
+    public CQueue() {
+        stack1 = new Stack<>();
+        stack2 = new Stack<>();
+    }
+
+    public void appendTail(int value) {
+        stack1.add(value);
+    }
+
+    public int deleteHead() {
+        if (stack2.isEmpty()) {
+            if (stack1.isEmpty()) {
+                return -1;
+            }
+            else {
+                while (!stack1.isEmpty()) {
+                    stack2.push(stack1.pop());
+                }
+                return stack2.pop();
+            }
+        }
+        return stack2.pop();
+    }
+
+    public int majorityElement(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+            if (map.get(num) > nums.length / 2) {
+                return num;
+            }
+        }
+        return -1;
+    }
+
+
+}
+
+class TreeNode {
+
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode() {
+    }
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+
+    public TreeNode(int val, TreeNode left, TreeNode right) {
         this.val = val;
         this.left = left;
         this.right = right;
