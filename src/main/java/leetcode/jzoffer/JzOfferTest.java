@@ -1848,30 +1848,6 @@ class Solution {
     }
 
     /*
-     * @Description  剑指 Offer II 017. 含有所有字符的最短字符串
-     * @author   Edison
-     * @date    2023/6/30 14:50
-     * @Param   [s, t]
-     * @return  java.lang.String
-     */
-    public String minWindow(String s, String t) {
-        if (s.length() < t.length()) return "";
-        int[] a = new int[58];
-        int[] b = new int[58];
-        for (char ch : t.toCharArray()) {
-            a[ch - 'A']++;
-        }
-        int left = 0;
-        int right = 0;
-        int count = 0;
-        String res = "";
-        while (right < s.length()) {
-
-        }
-        return res;
-    }
-
-    /*
      * @Description  剑指 Offer II 028. 展平多级双向链表
      * @author   Edison
      * @date    2023/7/4 17:42
@@ -2018,6 +1994,63 @@ class Solution {
         convertBST(root.left);
         return root;
     }
+
+    /*
+     * @description: 剑指 Offer II 039. 直方图最大矩形面积
+     * @author: edison 
+     * @date: 2023/7/11 11:12
+     * @param: [heights]
+     * @return: int
+     */
+    public int largestRectangleArea(int[] heights) {
+        int[] height = new int[heights.length + 2];
+        System.arraycopy(heights, 0, height, 1, heights.length);
+        height[0] = height[heights.length + 1] = 0;
+        Deque<Integer> stack = new LinkedList<>();
+        stack.push(0);
+        int ans = 0;
+        for (int i = 1; i < height.length; i++) {
+            while (height[i] < height[stack.peek()]) {
+                int h = height[stack.pop()];
+                int w = i - stack.peek() - 1;
+                ans = Math.max(ans, h * w);
+            }
+            stack.push(i);
+        }
+        return ans;
+    }
+
+    /*
+     * @description:
+     * @author: edison
+     * @date: 2023/7/11 11:37
+     * @param: [s, t]
+     * @return: java.lang.String
+     */
+    public String minWindow(String s, String t) {
+        int[] a = new int[58];
+        int[] b = new int[58];
+        for (char ch : t.toCharArray()) {
+            a[ch - 'A']++;
+        }
+        int left = 0, right = 0, count = 0;
+        String str = "";
+        while (right < s.length()) {
+            b[s.charAt(right) - 'A']++;
+            if (b[s.charAt(right) - 'A'] <= a[s.charAt(right) - 'A']) count++;
+            while (left <= right && b[s.charAt(left) - 'A'] > a[s.charAt(left) - 'A']) {
+                b[s.charAt(left) - 'A']--;
+                left++;
+            }
+            if (count == t.length() && (str.isEmpty() || str.length() > right - left + 1)) {
+                str = s.substring(left , right + 1);
+            }
+            right++;
+        }
+        return str;
+    }
+
+
 }
 
 /*

@@ -344,6 +344,21 @@ class Solution {
         return ans;
     }
 
+    /*
+     * @description: 1911. 最大子序列交替和
+     * @author: edison 
+     * @date: 2023/7/11 11:16
+     * @param: [nums]
+     * @return: long
+     */
+    public long maxAlternatingSum(int[] nums) {
+        long[] dp = new long[nums.length];
+        dp[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 1] - nums[i - 1] + nums[i]);
+        }
+        return dp[nums.length - 1];
+    }
 
 }
 
