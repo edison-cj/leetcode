@@ -360,6 +360,24 @@ class Solution {
         return dp[nums.length - 1];
     }
 
+    /*
+     * @description: 2544. 交替数字和
+     * @author: edison 
+     * @date: 2023/7/12 11:22
+     * @param: [n]
+     * @return: int
+     */
+    public int alternateDigitSum(int n) {
+        int flag = 1;
+        int sum = 0;
+        while (n > 0) {
+            sum += n % 10 * flag;
+            flag = -flag;
+            n /= 10;
+        }
+        return sum * -flag;
+    }
+
 }
 
 class TreeNode {
