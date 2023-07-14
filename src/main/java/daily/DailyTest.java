@@ -403,6 +403,25 @@ class Solution {
         return ans;
     }
 
+    /*
+     * @description: 979. 在二叉树中分配硬币
+     * @author: edison
+     * @date: 2023/7/14 17:18
+     * @param: [root]
+     * @return: int
+     */
+    int sum = 0;
+    public int distributeCoins(TreeNode root) {
+        dfs(root);
+        return sum;
+    }
+    int dfs(TreeNode root) {
+        if (root == null) return 0;
+        int l = dfs(root.left);
+        int r = dfs(root.right);
+        sum += Math.abs(l) + Math.abs(r);
+        return l + r + root.val - 1;
+    }
 }
 
 class TreeNode {
