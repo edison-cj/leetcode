@@ -2,9 +2,8 @@ package second.other;
 
 import com.beust.ah.A;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.channels.ClosedChannelException;
+import java.util.*;
 
 /**
  * @Author: edison
@@ -351,6 +350,136 @@ class Solution {
         }
         return null;
     }
+
+    /*
+     * @description: 205. 同构字符串
+     * @author: edison 
+     * @date: 2023/7/17 17:02
+     * @param: [s, t]
+     * @return: boolean
+     */
+    public boolean isIsomorphic(String s, String t) {
+        HashMap<Character, Character> map1 = new HashMap<>();
+        HashMap<Character, Character> map2 = new HashMap<>();
+        for (int i = 0, j = 0; i < s.length(); i++, j++) {
+            if (!map1.containsKey(s.charAt(i))) map1.put(s.charAt(i), t.charAt(j));
+            if (!map2.containsKey(t.charAt(j))) map2.put(t.charAt(j), s.charAt(i));
+            if (map1.get(s.charAt(i)) != t.charAt(j) || map2.get(t.charAt(j)) != s.charAt(i)) return false;
+        }
+        return true;
+    }
+
+    /*
+     * @description: 1002. 查找共用字符
+     * @author: edison 
+     * @date: 2023/7/17 17:13
+     * @param: [words]
+     * @return: List<String>
+     */
+    public List<String> commonChars(String[] words) {
+        List<String> list = new ArrayList<>();
+        int[] hash = new int[26];
+        for (char ch : words[0].toCharArray()) {
+            hash[ch - 'a']++;
+        }
+        for (int i = 1; i < words.length; i++) {
+            int[] hash1 = new int[26];
+            for (int j = 0; j < words[i].length(); j++) {
+                hash1[words[i].charAt(j) - 'a']++;
+            }
+            for (int z = 0; z < 26; z++) {
+                hash[z] = Math.min(hash[z], hash1[z]);
+            }
+        }
+        for (int i = 0; i < 26; i++) {
+            while (hash[i]-- > 0) {
+                char ch = (char) (i + 'a');
+                list.add(String.valueOf(ch));
+            }
+        }
+        return list;
+    }
+
+    /*
+     * @description: 925. 长按键入
+     * @author: edison 
+     * @date: 2023/7/17 18:07
+     * @param: [name, typed]
+     * @return: boolean
+     */
+    public boolean isLongPressedName(String name, String typed) {
+        int i = 0;
+        int j = 0;
+        while (i < name.length() && j < typed.length()) {
+            if (name.charAt(i) == typed.charAt(j)) {
+                i++;
+                j++;
+            } else {
+                if (j == 0) return false;
+                while (j < typed.length() && typed.charAt(j) == typed.charAt(j - 1)) j++;
+                if (j < typed.length() && name.charAt(i) != typed.charAt(j)) return false;
+                i++;
+                j++;
+            }
+        }
+        if (i < name.length()) return false;
+        if (j < typed.length()) {
+            while (j < typed.length()) {
+                if (typed.charAt(j) == typed.charAt(j - 1)) j++;
+                else return false;
+            }
+        }
+        return true;
+    }
+
+    /*
+     * @description: 844. 比较含退格的字符串
+     * @author: edison 
+     * @date: 2023/7/17 18:19
+     * @param: [s, t]
+     * @return: boolean
+     */
+    public boolean backspaceCompare(String s, String t) {
+        int lenS = s.length() - 1;
+        int lenT = t.length() - 1;
+        int count1 = 0;
+        int count2 = 0;
+        while (lenS >= 0 || lenT >= 0) {
+            while (lenS >= 0) {
+                if (s.charAt(lenS) == '#') {
+                    count1++;
+                    lenS--;
+                } else if (count1 > 0) {
+                    count1--;
+                    lenS--;
+                } else {
+                    break;
+                }
+            }
+            while (lenT >= 0) {
+                if (t.charAt(lenT) == '#') {
+                    count2++;
+                    lenT--;
+                } else if (count2 > 0) {
+                    lenT--;
+                    count2--;
+                } else {
+                    break;
+                }
+            }
+            if (lenT >= 0 && lenS >= 0) {
+                if (s.charAt(lenS) != t.charAt(lenT)) return false;
+            } else {
+                if (lenT >= 0 || lenS >= 0) {
+                    return false;
+                }
+            }
+            lenT--;
+            lenS--;
+        }
+        return true;
+    }
+
 
 }
 
