@@ -480,6 +480,51 @@ class Solution {
         return true;
     }
 
+    /*
+     * @description: 129. 求根节点到叶节点数字之和
+     * @author: edison 
+     * @date: 2023/7/18 11:17
+     * @param: [root]
+     * @return: int
+     */
+    public int sumNumbers(TreeNode root) {
+        return dfs(root, 0);
+    }
+    int dfs(TreeNode root, int sum) {
+        if (root == null) return 0;
+        sum = sum * 10 + root.val;
+        if (root.left == null && root.right == null) return sum;
+        int left = dfs(root.left, sum);
+        int right = dfs(root.right, sum);
+        return left + right;
+    }
+
+    /*
+     * @description: 1382. 将二叉搜索树变平衡
+     * @author: edison 
+     * @date: 2023/7/18 11:38
+     * @param: [root]
+     * @return: second.other.TreeNode
+     */
+    ArrayList<Integer> list = new ArrayList<>();
+    public TreeNode balanceBST(TreeNode root) {
+        traversal(root);
+        return getTree(list, 0, list.size() - 1);
+    }
+    void traversal(TreeNode root) {
+        if (root == null) return;
+        traversal(root.left);
+        list.add(root.val);
+        traversal(root.right);
+    }
+    TreeNode getTree(ArrayList<Integer> list, int left, int right) {
+        if (left > right) return null;
+        int mid = left + (right - left) / 2;
+        TreeNode root = new TreeNode(list.get(mid));
+        root.left = getTree(list, left, mid - 1);
+        root.right = getTree(list, mid + 1, right);
+        return root;
+    }
 
 }
 
@@ -499,3 +544,23 @@ class ListNode {
         this.next = next;
     }
 }
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode() {
+    }
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+
+    public TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
