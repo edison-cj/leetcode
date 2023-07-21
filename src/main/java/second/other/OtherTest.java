@@ -526,6 +526,94 @@ class Solution {
         return root;
     }
 
+    /*
+     * @description: 100. 相同的树
+     * @author: edison 
+     * @date: 2023/7/19 11:16
+     * @param: [p, q]
+     * @return: boolean
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        else if (p == null || q == null) return false;
+        else if (p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+
+    /*
+     * @description: 101. 对称二叉树
+     * @author: edison
+     * @date: 2023/7/19 11:21
+     * @param: [root]
+     * @return: boolean
+     */
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root.left, root.right);
+    }
+    boolean isSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null) return true;
+        else if (left == null || right == null) return false;
+        else if (left.val != right.val) return false;
+        return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left);
+    }
+
+    public Node connect(Node root) {
+        if (root == null) return root;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size-- > 0) {
+                Node node = queue.poll();
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+                if (size > 0) node.next = queue.peek();
+            }
+        }
+        return root;
+    }
+
+    /*
+     * @description: 52. N 皇后 II
+     * @author: edison
+     * @date: 2023/7/21 11:24
+     * @param: [n]
+     * @return: int
+     */
+    int count;
+    public int totalNQueens(int n) {
+        count = 0;
+        char[][] board = new char[n][n];
+        for (char[] ch : board) Arrays.fill(ch, '.');
+        backTrack(n, 0, board);
+        return count;
+    }
+    boolean isValid(int row, int col, int n, char[][] board) {
+        for (int i = 0; i < row; i++) {
+            if (board[i][col] == 'Q') return false;
+        }
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+            if (board[i][j] == 'Q') return false;
+        }
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+            if (board[i][j] == 'Q') return false;
+        }
+        return true;
+    }
+    void backTrack(int n, int row, char[][] board) {
+        if (n == row) {
+            count++;
+            return;
+        }
+        for (int col = 0; col < n; col++) {
+            if (isValid(row, col, n, board)) {
+                board[row][col] = 'Q';
+                backTrack(n, row + 1, board);
+                board[row][col] = '.';
+            }
+        }
+    }
+
 }
 
 class ListNode {
@@ -561,6 +649,27 @@ class TreeNode {
         this.val = val;
         this.left = left;
         this.right = right;
+    }
+}
+
+class Node {
+    int val;
+    Node left;
+    Node right;
+    Node next;
+
+    public Node() {
+    }
+
+    public Node(int val) {
+        this.val = val;
+    }
+
+    public Node(int val, Node left, Node right, Node next) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+        this.next = next;
     }
 }
 
