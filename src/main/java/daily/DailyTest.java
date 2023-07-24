@@ -444,7 +444,53 @@ class Solution {
         return sb.reverse().toString();
     }
 
+    /*
+     * @description: 771. 宝石与石头
+     * @author: edison 
+     * @date: 2023/7/24 11:05
+     * @param: [jewels, stones]
+     * @return: int
+     */
+    public int numJewelsInStones(String jewels, String stones) {
+        byte[] arr = new byte[58];
+        for (char ch : jewels.toCharArray()) {
+            arr[ch - 65] = 1;
+        }
+        int ans = 0;
+        for (char ch : stones.toCharArray()) {
+            if (arr[ch - 65] == 1) ans++;
+        }
+        return ans;
+    }
 
+    /*
+     * @description: 373. 查找和最小的 K 对数字
+
+     * @author: edison 
+     * @date: 2023/7/24 16:24
+     * @param: [nums1, nums2, k]
+     * @return: java.util.List<java.util.List<java.lang.Integer>>
+     */
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        List<List<Integer>> list = new ArrayList<>();
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (b[1] + b[0]) - (a[1] + a[0]));
+        for (int i = 0; i < nums1.length; i++) {
+            for (int j = 0; j < Math.min(k, nums2.length); j++) {
+                if (pq.size() < k) pq.offer(new int[]{nums1[i], nums2[j]});
+                else {
+                    int[] peek = pq.peek();
+                    if (nums1[i] + nums2[j] > peek[0] + peek[1]) break;
+                    pq.poll();
+                    pq.offer(new int[]{nums1[i], nums2[j]});
+                }
+            }
+        }
+        while (!pq.isEmpty()) {
+            int[] ans = pq.poll();
+            list.add(Arrays.asList(ans[0], ans[1]));
+        }
+        return list;
+    }
 
 }
 

@@ -614,6 +614,151 @@ class Solution {
         }
     }
 
+    /*
+     * @description: 649. Dota2 参议院
+     * @author: edison 
+     * @date: 2023/7/24 9:39
+     * @param: [senate]
+     * @return: java.lang.String
+     */
+    public String predictPartyVictory(String senate) {
+        boolean R = true, D = true;
+        int flag = 0;
+        byte[] st = senate.getBytes();
+        while (R && D) {
+            R = false;
+            D = false;
+            for (int i = 0; i < st.length; i++) {
+                if (st[i] == 'R') {
+                    if (flag < 0) st[i] = 0;
+                    else R = true;
+                    flag++;
+                }
+                if (st[i] == 'D') {
+                    if (flag > 0) st[i] = 0;
+                    else D = true;
+                    flag--;
+                }
+            }
+        }
+        return R == true ? "Radiant" : "Dire";
+    }
+
+    /*
+     * @description: 1221. 分割平衡字符串
+     * @author: edison 
+     * @date: 2023/7/24 9:57
+     * @param: [s]
+     * @return: int
+     */
+    public int balancedStringSplit(String s) {
+        int ans = 0;
+        int flag = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == 'R') flag++;
+            else flag--;
+            if (flag == 0) ans++;
+        }
+        return ans;
+    }
+
+    /*
+     * @description: 5. 最长回文子串
+     * @author: edison 
+     * @date: 2023/7/24 10:01
+     * @param: [s]
+     * @return: java.lang.String
+     */
+    public String longestPalindrome(String s) {
+        if (s.length() == 1) return s;
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        int len = 0;
+        int index = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i; j < s.length(); j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j - i <= 1) dp[i][j] = true;
+                    else if (dp[i + 1][j - 1]) dp[i][j] = true;
+                }
+                if (dp[i][j] && j - i + 1 > len) {
+                    len = j - i + 1;
+                    index = i;
+                }
+            }
+        }
+        return s.substring(index, index + len);
+    }
+
+    /*
+     * @description: 132. 分割回文串 II
+     * @author: edison 
+     * @date: 2023/7/24 10:21
+     * @param: [s]
+     * @return: int
+     */
+    public int minCut(String s) {
+        int len = s.length();
+        boolean[][] isPalindromic = new boolean[len][len];
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j - i <= 1) isPalindromic[i][j] = true;
+                    else if (isPalindromic[i + 1][j - 1]) {
+                        isPalindromic[i][j] = true;
+                    }
+                } else isPalindromic[i][j] = false;
+            }
+        }
+        int[] dp = new int[len];
+        for (int i = 1; i < len; i++) {
+            dp[i] = i;
+            if (isPalindromic[0][i]) {
+                dp[i] = 0;
+                continue;
+            }
+            for (int j = 0; j < i; j++) {
+                if (isPalindromic[j + 1][i]) {
+                    dp[i] = Math.min(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        return dp[len - 1];
+    }
+
+    /*
+     * @description: 673. 最长递增子序列的个数
+     * @author: edison 
+     * @date: 2023/7/24 10:51
+     * @param: [nums]
+     * @return: int
+     */
+    public int findNumberOfLIS(int[] nums) {
+        if (nums.length == 1) return 1;
+        int[] dp = new int[nums.length];
+        int[] count = new int[nums.length];
+        Arrays.fill(dp, 1);
+        Arrays.fill(count, 1);
+        int max = 0;
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    if (dp[j] + 1 > dp[i]) {
+                        dp[i] = dp[j] + 1;
+                        count[i] = count[j];
+                    } else if (dp[j] + 1 == dp[i]) {
+                        count[i] += count[j];
+                    }
+                }
+            }
+            if (dp[i] > max) max = dp[i];
+        }
+        int ans = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (dp[i] == max) ans += count[i];
+        }
+        return ans;
+    }
+
 }
 
 class ListNode {

@@ -1,5 +1,6 @@
 package leetcode.jzoffer;
 
+import org.testng.annotations.IFactoryAnnotation;
 import org.testng.annotations.Test;
 
 import javax.sql.rowset.spi.SyncResolver;
@@ -2050,7 +2051,189 @@ class Solution {
         return str;
     }
 
+    /*
+     * @description: 剑指 Offer II 056. 二叉搜索树中两个节点之和
+     * @author: edison 
+     * @date: 2023/7/24 11:24
+     * @param: [root, k]
+     * @return: boolean
+     */
+    Set<Integer> set = new HashSet<>();
+    public boolean findTarget(TreeNode root, int k) {
+        if (root != null) {
+            if (set.contains(k - root.val)) return true;
+            else {
+                set.add(root.val);
+                return findTarget(root.left, k) || findTarget(root.right, k);
+            }
+        }
+        return false;
+    }
 
+    /*
+     * @description: 剑指 Offer II 057. 值和下标之差都在给定的范围内
+     * @author: edison
+     * @date: 2023/7/24 11:35
+     * @param: [nums, k, t]
+     * @return: boolean
+     */
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        HashMap<Long, Long> hashMap = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            long idx = getId((long) nums[i], (long) t + 1);
+            if (hashMap.containsKey(idx)) return true;
+            else {
+                hashMap.put(idx, (long) nums[i]);
+                if (hashMap.containsKey(idx - 1) && (long) nums[i] - hashMap.get(idx - 1) <= (long) t) return true;
+                if (hashMap.containsKey(idx + 1) && hashMap.get(idx + 1) - (long) nums[i] <= (long) t) return true;
+            }
+            if (i - k >= 0) {
+                hashMap.remove(getId(nums[i - k], t + 1));
+            }
+        }
+        return false;
+    }
+    long getId(long x, long w) {
+        return x < 0 ? x / w - 1 : x / w;
+    }
+
+    /*
+     * @description: 剑指 Offer II 060. 出现频率最高的 k 个数字
+     * @author: edison 
+     * @date: 2023/7/24 15:38
+     * @param: [nums, k]
+     * @return: int[]
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        for (int num : nums) {
+            hashMap.put(num, hashMap.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((pair1, pair2) -> pair1[1] - pair2[1]);
+        for (HashMap.Entry<Integer, Integer> map : hashMap.entrySet()) {
+            if (pq.size() < k) pq.add(new int[]{map.getKey(), map.getValue()});
+            else {
+                if (map.getValue() > pq.peek()[1]) {
+                    pq.poll();
+                    pq.add(new int[]{map.getKey(), map.getValue()});
+                }
+            }
+        }
+        int[] res = new int[k];
+        for (int i = k - 1; i >= 0; i--) {
+            res[i] = pq.poll()[0];
+        }
+        return res;
+    }
+
+    /*
+     * @description: 剑指 Offer II 061. 和最小的 k 个数对
+     * @author: edison 
+     * @date: 2023/7/24 15:56
+     * @param: [nums1, nums2, k]
+     * @return: java.util.List<java.util.List<java.lang.Integer>>
+     */
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+        List<List<Integer>> list = new ArrayList<>();
+        PriorityQueue<int[]> pq = new PriorityQueue<>((x, y) -> ((x[0] + x[1]) - (y[0] + y[1])));
+        for (int i = 0; i < nums1.length; i++) {
+            for (int j = 0; j < nums2.length; j++) {
+                pq.offer(new int[]{nums1[i], nums2[j]});
+            }
+        }
+        k = Math.min(k, pq.size());
+        for (int i = 0; i < k; i++) {
+            int[] tmp = pq.poll();
+            list.add(Arrays.asList(tmp[0], tmp[1]));
+        }
+        return list;
+    }
+
+}
+
+/*
+ * @description: 剑指 Offer II 059. 数据流的第 K 大数值
+ * @author: edison 
+ * @date: 2023/7/24 15:12
+ * @param: 
+ * @return: 
+ */
+class KthLargest {
+    PriorityQueue<Integer> queue;
+    int len;
+    public KthLargest(int k, int[] nums) {
+        this.len = k;
+        queue = new PriorityQueue<>();
+        for (int num : nums) {
+            queue.add(num);
+        }
+        while (queue.size() > k) queue.poll();
+    }
+
+    public int add(int val) {
+        queue.add(val);
+        while (queue.size() > len) queue.poll();
+        return queue.peek();
+    }
+}
+
+/*
+ * @description: 剑指 Offer II 058. 日程表
+ * @author: edison 
+ * @date: 2023/7/24 14:59
+ * @param: 
+ * @return: 
+ */
+class MyCalendar {
+
+    List<int[]> list;
+    public MyCalendar() {
+        list = new ArrayList<>();
+    }
+
+    public boolean book(int start, int end) {
+        for (int[] num : list) {
+            if (start >= num[1] || end < num[0]) continue;
+            return false;
+        }
+        list.add(new int[]{start, end});
+        return true;
+    }
+}
+
+/*
+ * @description: 剑指 Offer II 055. 二叉搜索树迭代器
+ * @author: edison 
+ * @date: 2023/7/24 11:19
+ * @param: 
+ * @return: 
+ */
+class BSTIterator {
+
+    List<Integer> list;
+    int index;
+    int len;
+    public BSTIterator(TreeNode root) {
+        list = new ArrayList<>();
+        dfs(root);
+        this.len = list.size();
+        index = 0;
+    }
+
+    public int next() {
+        return list.get(index++);
+    }
+
+    public boolean hasNext() {
+        return index < len ? true : false;
+    }
+
+    void dfs(TreeNode root) {
+        if (root == null) return;
+        dfs(root.left);
+        list.add(root.val);
+        dfs(root.right);
+    }
 }
 
 /*
