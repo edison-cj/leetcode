@@ -759,6 +759,156 @@ class Solution {
         return ans;
     }
 
+    /*
+     * @description: 841. 钥匙和房间
+     * @author: edison
+     * @date: 2023/7/25 9:42
+     * @param: [rooms]
+     * @return: boolean
+     */
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        List<Boolean> visited = new ArrayList<>(){{
+            for (int i = 0; i < rooms.size(); i++) {
+                add(false);
+            }
+        }};
+        dfs(0, rooms, visited);
+        for (boolean flag : visited) {
+            if (!flag) return false;
+        }
+        return true;
+    }
+    void dfs(int key, List<List<Integer>> rooms, List<Boolean> visited) {
+        if (visited.get(key)) return;
+        visited.set(key, true);
+        for (int k : rooms.get(key)) {
+            dfs(k, rooms, visited);
+        }
+    }
+
+    /*
+     * @description: 127. 单词接龙
+     * @author: edison 
+     * @date: 2023/7/25 10:02
+     * @param: [beginWord, endWord, wordList]
+     * @return: int
+     */
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        HashSet<String> wordSet = new HashSet<>(wordList);
+        if (!wordSet.contains(endWord)) return 0;
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        hashMap.put(beginWord, 1);
+        while (!queue.isEmpty()) {
+            String word = queue.poll();
+            int path = hashMap.get(word);
+            for (int i = 0; i < word.length(); i++) {
+                char[] chars = word.toCharArray();
+                for (char k = 'a'; k <= 'z'; k++) {
+                    chars[i] = k;
+                    String newWord = String.valueOf(chars);
+                    if (newWord.equals(endWord)) return path + 1;
+                    if (wordSet.contains(newWord) && !hashMap.containsKey(newWord)) {
+                        hashMap.put(newWord, path + 1);
+                        queue.offer(newWord);
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    
+    /*
+     * @description: 657. 机器人能否返回原点
+     * @author: edison 
+     * @date: 2023/7/25 10:37
+     * @param: [moves]
+     * @return: boolean
+     */
+    public boolean judgeCircle(String moves) {
+        int x = 0, y = 0;
+        for (char ch : moves.toCharArray()) {
+            if (ch == 'U') y++;
+            else if (ch == 'D') y--;
+            else if (ch == 'L') x--;
+            else if (ch == 'R') x++;
+        }
+        return x == 0 && y == 0;
+    }
+
+    /*
+     * @description: 31. 下一个排列
+     * @author: edison 
+     * @date: 2023/7/25 10:41
+     * @param: [nums]
+     * @return: void
+     */
+    public void nextPermutation(int[] nums) {
+        for (int i = nums.length - 2; i >= 0; i--) {
+            for (int j = nums.length - 1; j > i; j--) {
+                if (nums[j] > nums[i]) {
+                    int temp = nums[j];
+                    nums[j] = nums[i];
+                    nums[i] = temp;
+                    Arrays.sort(nums, i + 1, nums.length);
+                    return;
+                }
+            }
+        }
+        Arrays.sort(nums);
+    }
+
+    /*
+     * @description: 463. 岛屿的周长
+     * @author: edison 
+     * @date: 2023/7/25 10:49
+     * @param: [grid]
+     * @return: int
+     */
+    public int islandPerimeter(int[][] grid) {
+        int[] dirx = {-1, 1, 0, 0};
+        int[] diry = {0, 0, -1, 1};
+        int res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 1) {
+                    for (int k = 0; k < 4; k++) {
+                        int x = i + dirx[k];
+                        int y = j + diry[k];
+                        if (x < 0 || x >= grid.length || y < 0 || y >= grid[0].length || grid[x][y] == 0) res++;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    /*
+     * @description: 1356. 根据数字二进制下 1 的数目排序
+     * @author: edison 
+     * @date: 2023/7/25 11:06
+     * @param: [arr]
+     * @return: int[]
+     */
+    public int[] sortByBits(int[] arr) {
+        return Arrays.stream(arr).boxed().sorted(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                int cnt1 = bitCount(o1);
+                int cnt2 = bitCount(o2);
+                return cnt1 == cnt2 ? Integer.compare(o1, o2) : Integer.compare(cnt1, cnt2);
+            }
+        }).mapToInt(Integer::valueOf).toArray();
+    }
+    int bitCount(int n) {
+        int count = 0;
+        while (n > 0) {
+            n &= (n - 1);
+            count++;
+        }
+        return count;
+    }
 }
 
 class ListNode {

@@ -492,6 +492,37 @@ class Solution {
         return list;
     }
 
+    /*
+     * @description: 2208. 将数组和减半的最少操作次数
+     * @author: edison 
+     * @date: 2023/7/25 11:18
+     * @param: [nums]
+     * @return: int
+     */
+    public int halveArray(int[] nums) {
+        PriorityQueue<Double> pq = new PriorityQueue<>(new Comparator<Double>() {
+            @Override
+            public int compare(Double o1, Double o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        double sum = 0;
+        for (int num : nums) {
+            sum += num;
+            pq.add((double) num);
+        }
+        double target = sum / 2;
+        int ans = 0;
+        while (sum > target) {
+           double temp = pq.poll();
+           temp /= 2;
+           sum -= temp;
+           pq.add(temp);
+           ans++;
+        }
+        return ans;
+    }
+
 }
 
 class TreeNode {
