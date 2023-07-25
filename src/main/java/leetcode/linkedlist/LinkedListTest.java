@@ -1,7 +1,5 @@
 package leetcode.linkedlist;
 
-import org.yaml.snakeyaml.tokens.WhitespaceToken;
-
 /**
  * @version 1.0
  * @Description:
