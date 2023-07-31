@@ -524,6 +524,43 @@ class Solution {
         return ans;
     }
 
+    /*
+     * @description: 143. 重排链表
+     * @author: edison 
+     * @date: 2023/7/31 9:34
+     * @param: [head]
+     * @return: void
+     */
+    public void reorderList(ListNode head) {
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        fast = reverse(slow.next);
+        slow.next = null;
+        slow = head;
+        while (fast != null) {
+            ListNode temp1 = slow.next;
+            ListNode temp2 = fast.next;
+            slow.next = fast;
+            fast.next = temp1;
+            slow = temp1;
+            fast = temp2;
+        }
+    }
+    ListNode reverse(ListNode cur) {
+        ListNode pre = null;
+        while (cur != null) {
+            ListNode temp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = temp;
+        }
+        return pre;
+    }
+
 }
 
 class TreeNode {
@@ -542,5 +579,23 @@ class TreeNode {
         this.val = val;
         this.left = left;
         this.right = right;
+    }
+}
+
+class ListNode {
+
+    int val;
+    ListNode next;
+
+    public ListNode() {
+    }
+
+    public ListNode(int val) {
+        this.val = val;
+    }
+
+    public ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
     }
 }

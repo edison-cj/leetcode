@@ -1504,23 +1504,6 @@ class Solution {
     }
 
     /*
-     * @Description  剑指 Offer 51. 数组中的逆序对
-     * @author   Edison
-     * @date    2023/6/26 16:23
-     * @Param   [nums]
-     * @return  int
-     */
-    public int reversePairs(int[] nums) {
-        int count = 0;
-        for (int i = 0; i < nums.length - 1; i++) {
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[i] > nums[j]) count++;
-            }
-        }
-        return count;
-    }
-
-    /*
      * @Description  剑指 Offer 63. 股票的最大利润
      * @author   Edison
      * @date    2023/6/28 10:37
@@ -2149,6 +2132,120 @@ class Solution {
         return list;
     }
 
+    /*
+     * @description: 剑指 Offer 51. 数组中的逆序对
+     * @author: edison 
+     * @date: 2023/7/31 10:01
+     * @param: [nums]
+     * @return: int
+     */
+    int[] tmp, nums;
+    public int reversePairs(int[] nums) {
+        tmp = new int[nums.length];
+        this.nums = nums;
+        return mergeSort(0, nums.length - 1);
+    }
+    int mergeSort(int l, int r) {
+        if (l >= r) return 0;
+        int mid = l + (r - l) / 2;
+        int res = mergeSort(l, mid) + mergeSort(mid + 1, r);
+        int i = l, k = mid + 1;
+        for (int j = l; j <= r; j++) {
+            tmp[j] = nums[j];
+        }
+        for (int j = l; j <= r; j++) {
+            if (i == mid + 1)
+                nums[j] = tmp[k++];
+            else if (k == r + 1 || tmp[i] <= tmp[k])
+                nums[j] = tmp[i++];
+            else {
+                nums[j] = tmp[k++];
+                res += mid - i + 1; // 统计逆序对
+            }
+        }
+        return res;
+    }
+
+    /*
+     * @description: 剑指 Offer 19. 正则表达式匹配
+     * @author: edison 
+     * @date: 2023/7/31 10:28
+     * @param: [s, p]
+     * @return: boolean
+     */
+    public boolean isMatch(String s, String p) {
+        //dp[i][j]含义：以 i - 1索引结尾的 s字符串，是否能够由 j - 1索引结尾的p字符串 模式匹配
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        dp[0][0] = true;
+        for (int j = 2; j <= p.length(); j++) {
+            if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 2];
+        }
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 1; j <= p.length(); j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.')
+                    dp[i][j] = dp[i - 1][j - 1];
+                else if (p.charAt(j - 1) == '*') {
+                    if (p.charAt(j - 2) == s.charAt(i - 1) || p.charAt(j - 2) == '.')
+                        dp[i][j] = dp[i][j - 2] || dp[i - 1][j];
+                    else dp[i][j] = dp[i][j - 2];
+                }
+            }
+        }
+        return dp[s.length()][p.length()];
+    }
+
+    /*
+     * @description: 剑指 Offer 60. n个骰子的点数
+     * @author: edison 
+     * @date: 2023/7/31 11:08
+     * @param: [n]
+     * @return: double[]
+     */
+    public double[] dicesProbability(int n) {
+        int[][] dp = new int[n + 1][6 * n + 1];
+        double[] ans = new double[5 * n + 1];
+        double all = Math.pow(6, n);
+        for (int i = 1; i <= 6; i++)
+            dp[1][i] = 1;
+        for (int i = 1; i <= n; i++) { //i个骰子
+            for (int j = i; j <= 6 * i; j++) { //点数j
+                for (int k = 1; k <= 6; k++) { //第i骰子的6种情况
+                    dp[i][j] += j >= k ? dp[i - 1][j - k] : 0;
+                    if (i == n)
+                        ans[j-i]=dp[i][j]/all;
+                }
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * @description: 剑指 Offer II 001. 整数除法
+     * @author: edison 
+     * @date: 2023/7/31 11:30
+     * @param: [a, b]
+     * @return: int
+     */
+    public int divide(int a, int b) {
+        int min = Integer.MIN_VALUE;
+        int max = Integer.MAX_VALUE;
+        int min_limit = min >> 1;
+        if (a == min && b == -1) return max;
+        boolean isPos = (a < 0 && b > 0) || (a > 0 && b < 0) ? false : true;
+        if (a > 0) a = -a;
+        if (b > 0) b = -b;
+        int ans = 0;
+        while (a <= b) {
+            int d = b, c = 1;
+            while (d >= min_limit && d + d >= a) {
+                d <<= 1;
+                c <<= 1;
+            }
+            a -= d;
+            ans += c;
+        }
+        return isPos ? ans : -ans;
+    }
 
 }
 
