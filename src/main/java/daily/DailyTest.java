@@ -561,6 +561,27 @@ class Solution {
         return pre;
     }
 
+    /*
+     * @description: 2681. 英雄的力量
+     * @author: edison 
+     * @date: 2023/8/1 11:03
+     * @param: [nums]
+     * @return: int
+     */
+    public int sumOfPower(int[] nums) {
+        Arrays.sort(nums);
+        int ans = 0;
+        int mod = (int) 1e9 + 7;
+        int preNum = 0;
+        int dp = 0;
+        for (int i = 0; i < nums.length; i++) {
+            dp = (preNum + nums[i]) % mod;
+            preNum = (preNum + dp) % mod;
+            ans = (int) ((ans + (long) nums[i] * nums[i] % mod * dp) % mod);
+        }
+        return ans;
+    }
+
 }
 
 class TreeNode {
