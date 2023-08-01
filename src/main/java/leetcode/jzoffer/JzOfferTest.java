@@ -1,9 +1,8 @@
 package leetcode.jzoffer;
 
-import org.testng.annotations.IFactoryAnnotation;
-import org.testng.annotations.Test;
 
-import javax.sql.rowset.spi.SyncResolver;
+import org.junit.Test;
+
 import java.math.BigInteger;
 import java.util.*;
 

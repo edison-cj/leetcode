@@ -1,8 +1,7 @@
 package leetcode.other;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import javax.print.DocFlavor;
 import java.util.*;
 
 /**
@@ -474,7 +473,7 @@ class Solution {
      * @return  boolean
      */
     public boolean canVisitAllRooms(List<List<Integer>> rooms) {
-        List<Boolean> visited = new ArrayList<>() {{
+        List<Boolean> visited = new ArrayList<Boolean>() {{
             for (int i = 0; i < rooms.size(); i++) {
                 add(false);
             }

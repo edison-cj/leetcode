@@ -1,6 +1,7 @@
 package leetcode.array;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;

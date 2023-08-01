@@ -1,7 +1,5 @@
 package second.array;
 
-import org.testng.internal.annotations.IAnnotationFinder;
-
 /**
  * @version 1.0
  * @Description:
