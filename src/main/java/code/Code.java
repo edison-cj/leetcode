@@ -616,6 +616,249 @@ class Solution {
         }
         return str;
     }
+
+    /*
+     * @description: 977. 有序数组的平方
+     * @author: edison 
+     * @date: 2023/8/3 9:52
+     * @param: [nums]
+     * @return: int[]
+     */
+    public int[] sortedSquares(int[] nums) {
+        int[] ans = new int[nums.length];
+        int left = 0;
+        int right = nums.length - 1;
+        int k = nums.length - 1;
+        while (left <= right) {
+            if (nums[left] * nums[left] < nums[right] * nums[right]) {
+                ans[k--] = nums[right] * nums[right];
+                right--;
+            } else {
+                ans[k--] = nums[left] * nums[left];
+                left++;
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * @description: 722. 删除注释
+     * @author: edison
+     * @date: 2023/8/3 10:05
+     * @param: [source]
+     * @return: java.util.List<java.lang.String>
+     */
+    public List<String> removeComments(String[] source) {
+        List<String> list = new ArrayList<>();
+        boolean blockComment = false;
+        StringBuilder sb = new StringBuilder();
+        for (String s : source) {
+            int len = s.length();
+            for (int i = 0; i < len; i++) {
+                if (blockComment) {
+                    if (i + 1 < len && s.charAt(i) == '*' && s.charAt(i + 1) == '/') {
+                        blockComment = false;
+                        i++;
+                    }
+                } else {
+                    if (i + 1 < len && s.charAt(i) == '/' && s.charAt(i + 1) == '*') {
+                        blockComment = true;
+                        i++;
+                    } else if (i + 1 < len && s.charAt(i) == '/' && s.charAt(i + 1) == '/') {
+                        break;
+                    } else {
+                        sb.append(s.charAt(i));
+                    }
+                }
+            }
+            if (!blockComment && sb.length() > 0) {
+                list.add(sb.toString());
+                sb.setLength(0);
+            }
+        }
+        return list;
+    }
+
+    /*
+     * @description: 79. 单词搜索
+     * @author: edison
+     * @date: 2023/8/3 10:31
+     * @param: [board, word]
+     * @return: boolean
+     */
+    public boolean exist(char[][] board, String word) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (dfs(board, word.toCharArray(), i, j, 0)) return true;
+            }
+        }
+        return false;
+    }
+    boolean dfs(char[][] board, char[] word, int i, int j, int k) {
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] != word[k]) return false;
+        if (k == word.length - 1) return true;
+        board[i][j] = '\0';
+        boolean ans = dfs(board, word, i - 1, j, k + 1) || dfs(board, word, i + 1, j, k + 1) ||
+                dfs(board, word, i, j - 1, k + 1) || dfs(board, word, i, j + 1, k + 1);
+        board[i][j] = word[k];
+        return ans;
+    }
+
+    /*
+     * @description: 94. 二叉树的中序遍历
+     * @author: edison 
+     * @date: 2023/8/3 10:57
+     * @param: [root]
+     * @return: java.util.List<java.lang.Integer>
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        dfs(root, list);
+        return list;
+    }
+    void dfs(TreeNode root, List<Integer> list) {
+        if (root == null) return;
+        dfs(root.left, list);
+        list.add(root.val);
+        dfs(root.right, list);
+    }
+
+    /*
+     * @description: 96. 不同的二叉搜索树
+     * @author: edison 
+     * @date: 2023/8/3 11:04
+     * @param: [n]
+     * @return: int
+     */
+    public int numTrees(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[i - j] * dp[j - 1];
+            }
+        }
+        return dp[n];
+    }
+
+    /*
+     * @description: 98. 验证二叉搜索树
+     * @author: edison 
+     * @date: 2023/8/3 11:07
+     * @param: [root]
+     * @return: boolean
+     */
+    TreeNode pre = null;
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) return true;
+        boolean left = isValidBST(root.left);
+        if (pre != null && pre.val >= root.val) return false;
+        pre = root;
+        boolean right = isValidBST(root.right);
+        return left && right;
+    }
+
+    /*
+     * @description: 101. 对称二叉树
+     * @author: edison 
+     * @date: 2023/8/3 11:11
+     * @param: [root]
+     * @return: boolean
+     */
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root.left, root.right);
+    }
+    boolean isSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null) return true;
+        if (left == null || right == null || left.val != right.val) return false;
+        return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left);
+    }
+
+    /*
+     * @description: 102. 二叉树的层序遍历
+     * @author: edison 
+     * @date: 2023/8/3 11:15
+     * @param: [root]
+     * @return: java.util.List<java.util.List<java.lang.Integer>>
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (root == null) return ans;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> list = new ArrayList<>();
+            while (size-- > 0) {
+                TreeNode node = queue.poll();
+                list.add(node.val);
+                if (node.left != null) queue.add(node.left);
+                if (node.right != null) queue.add(node.right);
+            }
+            ans.add(list);
+        }
+        return ans;
+    }
+    void bfs(TreeNode root, List<List<Integer>> list, int depth) {
+        if (root == null) return;
+        depth++;
+        if (list.size() < depth) {
+            List<Integer> item = new ArrayList<>();
+            list.add(item);
+        }
+        list.get(depth - 1).add(root.val);
+        bfs(root.left, list, depth);
+        bfs(root.right, list, depth);
+    }
+
+    /*
+     * @description: 105. 从前序与中序遍历序列构造二叉树
+     * @author: edison 
+     * @date: 2023/8/3 11:25
+     * @param: [preorder, inorder]
+     * @return: code.TreeNode
+     */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        return buildTree(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1, map);
+    }
+    TreeNode buildTree(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd, HashMap<Integer, Integer> map) {
+        if (preStart > preEnd || inStart > inStart) return null;
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int index = map.get(root.val);
+        int len = index - inStart;
+        root.left = buildTree(preorder,preStart + 1, preStart + len, inorder, inStart, index, map);
+        root.right = buildTree(preorder, preStart + len + 1, preEnd, inorder, index + 1, inEnd, map);
+        return root;
+    }
+
+    /*
+     * @description: 106. 从中序与后序遍历序列构造二叉树
+     * @author: edison 
+     * @date: 2023/8/3 11:37
+     * @param: [inorder, postorder]
+     * @return: code.TreeNode
+     */
+    public TreeNode buildTree2(int[] inorder, int[] postorder) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+        return build(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1, map);
+    }
+    TreeNode build(int[] inorder, int inBegin, int inEnd, int[] postorder, int postBegin, int postEnd, HashMap<Integer, Integer> map) {
+        if (inBegin >= inEnd || postBegin >= postEnd) return null;
+        TreeNode root = new TreeNode(postorder[postEnd]);
+        int index = map.get(root.val);
+        int len = index - inBegin;
+        root.left = build(inorder, inBegin, index, postorder, postBegin, postBegin + len, map);
+        root.right = build(inorder,index + 1, inEnd, postorder, postBegin + len, postEnd - 1, map);
+        return root;
+    }
 }
 
 class ListNode {
@@ -635,4 +878,22 @@ class ListNode {
     }
 }
 
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode() {
+    }
+
+    public TreeNode(int val) {
+        this.val = val;
+    }
+
+    public TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
 
