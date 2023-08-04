@@ -859,6 +859,24 @@ class Solution {
         root.right = build(inorder,index + 1, inEnd, postorder, postBegin + len, postEnd - 1, map);
         return root;
     }
+
+    /*
+     * @description: 114. 二叉树展开为链表
+     * @author: edison 
+     * @date: 2023/8/4 11:32
+     * @param: [root]
+     * @return: void
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) return;
+        flatten(root.right);
+        flatten(root.left);
+        root.right = pre;
+        root.left = null;
+        pre = root;
+    }
+
+
 }
 
 class ListNode {
