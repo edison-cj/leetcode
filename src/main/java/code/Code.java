@@ -15,6 +15,31 @@ public class Code {
 
     Solution solution = new Solution();
 
+    public static void main(String[] args) {
+        Integer integer = Integer.valueOf(args[args.length - 1]);
+        int i = integer.intValue();
+        if (args.length > 1) {
+            System.out.println(i);
+        }
+        if (args.length > 0) {
+            System.out.println(i - 1);
+        } else {
+            System.out.println(i - 2);
+        }
+    }
+    @Test
+    public void Test1() {
+        int[] dp = new int[2014];
+        dp[1] = 0;
+        dp[2] = 1;
+        for (int i = 3;i < 2014; i++) {
+            if (i % 2 == 0) dp[i] = Math.min(dp[i - 1] + 1, dp[i / 2] + 1);
+            else dp[i] = dp[i - 1] + 1;
+        }
+        System.out.println(dp[2013]);
+    }
+
+
     @Test
     public void test() {
         String s = "ADOBECODEBANC";
@@ -876,7 +901,223 @@ class Solution {
         pre = root;
     }
 
+    /*
+     * @description: 28. 找出字符串中第一个匹配项的下标
+     * @author: edison 
+     * @date: 2023/8/7 15:26
+     * @param: [haystack, needle]
+     * @return: int
+     */
+    public int strStr(String haystack, String needle) {
+        int[] next = new int[needle.length()];
+        getNext(next, needle);
+        int j = -1;
+        for (int i = 0; i < haystack.length(); i++) {
+            while (j >= 0 && haystack.charAt(i) != needle.charAt(j + 1)) j = next[j];
+            if (haystack.charAt(i) == needle.charAt(j + 1)) j++;
+            if (j == needle.length() - 1) return i - j;
+        }
+        return -1;
+    }
+    void getNext(int[] next, String str) {
+        int j = -1;
+        next[0] = j;
+        for (int i = 1; i < str.length(); i++) {
+            while (j >= 0 && str.charAt(i) != str.charAt(j + 1)) j = next[j];
+            if (str.charAt(i) == str.charAt(j + 1)) j++;
+            next[i] = j;
+        }
+    }
 
+    /*
+     * @description: 459. 重复的子字符串
+     * @author: edison
+     * @date: 2023/8/7 15:54
+     * @param: [s]
+     * @return: boolean
+     */
+    public boolean repeatedSubstringPattern(String s) {
+        int len = s.length();
+        int[] next = new int[len];
+        getNext(next, s);
+        if (next[len - 1] != -1 && len % (len - next[len - 1] - 1) == 0) return true;
+        return false;
+    }
+
+    /*
+     * @description: 1047. 删除字符串中的所有相邻重复项
+     * @author: edison 
+     * @date: 2023/8/7 16:07
+     * @param: [s]
+     * @return: java.lang.String
+     */
+    public String removeDuplicates(String s) {
+        StringBuilder sb = new StringBuilder();
+        Deque<Character> deque = new LinkedList<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (!deque.isEmpty() && s.charAt(i) == deque.peek()) deque.pop();
+            else deque.push(s.charAt(i));
+        }
+        while (!deque.isEmpty()) sb.append(deque.pollLast());
+        return sb.toString();
+    }
+
+    /*
+     * @description: 150. 逆波兰表达式求值
+     * @author: edison 
+     * @date: 2023/8/7 16:17
+     * @param: [tokens]
+     * @return: int
+     */
+    public int evalRPN(String[] tokens) {
+        Deque<Integer> deque = new LinkedList<>();
+        for (String token : tokens) {
+            switch (token) {
+                case "+" : deque.push(deque.pop() + deque.pop());
+                    break;
+                case "-" : deque.push(-deque.pop() + deque.pop());
+                    break;
+                case "*" : deque.push(deque.pop() * deque.pop());
+                    break;
+                case "/" :
+                    int temp1 = deque.pop();
+                    int temp2 = deque.pop();
+                    deque.push(temp2 / temp1);
+                    break;
+                default: deque.push(Integer.valueOf(token));
+            }
+        }
+        return deque.pop();
+    }
+
+    /*
+     * @description: 239. 滑动窗口最大值
+     * @author: edison 
+     * @date: 2023/8/7 16:26
+     * @param: [nums, k]
+     * @return: int[]
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums.length == 1) return nums;
+        int[] ans = new int[nums.length - k + 1];
+        MyQueue queue = new MyQueue();
+        for (int i = 0; i < k; i++) {
+            queue.add(nums[i]);
+        }
+        int num = 0;
+        ans[num++] = queue.peek();
+        for (int i = k; i < nums.length; i++) {
+            queue.poll(nums[i - k]);
+            queue.add(nums[i]);
+            ans[num++] = queue.peek();
+        }
+        return ans;
+    }
+
+    /*
+     * @description: 347. 前 K 个高频元素
+     * @author: edison
+     * @date: 2023/8/7 16:46
+     * @param: [nums, k]
+     * @return: int[]
+     */
+    public int[] topKFrequent(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (a[1] - b[1]));
+        for (HashMap.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (pq.size() < k) pq.add(new int[]{entry.getKey(), entry.getValue()});
+            else {
+                if (entry.getValue() > pq.peek()[1]) {
+                    pq.poll();
+                    pq.add(new int[]{entry.getKey(), entry.getValue()});
+                }
+            }
+        }
+        int[] ans = new int[k];
+        for (int i = k - 1; i >= 0; i--) ans[i] = pq.poll()[0];
+        return ans;
+    }
+
+    /*
+     * @description: 110. 平衡二叉树
+     * @author: edison 
+     * @date: 2023/8/7 17:02
+     * @param: [root]
+     * @return: boolean
+     */
+    public boolean isBalanced(TreeNode root) {
+        return getDepth(root) != -1;
+    }
+    int getDepth(TreeNode root) {
+        if (root == null) return 0;
+        int left = getDepth(root.left);
+        if (left == -1) return -1;
+        int right = getDepth(root.right);
+        if (right == -1) return -1;
+        return Math.abs(left - right) > 1 ? -1 : Math.max(left, right) + 1;
+    }
+
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> list = new ArrayList<>();
+        LinkedList<Integer> path = new LinkedList<>();
+        dfs(root, path, list);
+        return list;
+    }
+    void dfs(TreeNode root, LinkedList<Integer> path, List<String> list) {
+        path.add(root.val);
+        if (root.left == null && root.right == null) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < path.size() - 1; i++) {
+                sb.append(path.get(i)).append("->");
+            }
+            sb.append(path.get(path.size() - 1));
+            list.add(sb.toString());
+            return;
+        }
+        if (root.left != null) {
+            dfs(root.left, path, list);
+            path.removeLast();
+        }
+        if (root.right != null) {
+            dfs(root.right, path, list);
+            path.removeLast();
+        }
+    }
+
+    /*
+     * @description: 404. 左叶子之和
+     * @author: edison 
+     * @date: 2023/8/7 17:38
+     * @param: [root]
+     * @return: int
+     */
+    public int sumOfLeftLeaves(TreeNode root) {
+        if (root == null) return 0;
+        int val = 0;
+        if (root.left != null && root.left.left == null && root.left.right == null) val += root.left.val;
+        return val + sumOfLeftLeaves(root.left) + sumOfLeftLeaves(root.right);
+    }
+
+}
+
+class MyQueue {
+    Deque<Integer> deque = new LinkedList<>();
+
+    void poll(int val) {
+        if (!deque.isEmpty() && val == deque.peek()) deque.poll();
+    }
+
+    void add(int val) {
+        while (!deque.isEmpty() && val > deque.getLast()) deque.removeLast();
+        deque.add(val);
+    }
+
+    int peek() {
+        return deque.peek();
+    }
 }
 
 class ListNode {
