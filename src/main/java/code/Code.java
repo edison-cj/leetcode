@@ -1101,6 +1101,31 @@ class Solution {
         return val + sumOfLeftLeaves(root.left) + sumOfLeftLeaves(root.right);
     }
 
+    /*
+     * @description: 1749. 任意子数组和的绝对值的最大值
+     * @author: edison 
+     * @date: 2023/8/8 16:23
+     * @param: [nums]
+     * @return: int
+     */
+    public int maxAbsoluteSum(int[] nums) {
+        int ans = 0;
+        int preMax = 0;
+        int preMin = 0;
+        int preSum = 0;
+        for (int num : nums) {
+            preSum += num;
+            preMax = Math.max(preMax, preSum);
+            preMin = Math.min(preMin, preSum);
+            if (preSum < 0) {
+                ans = Math.max(ans, preMax - preSum);
+            } else {
+                ans = Math.max(ans, preSum - preMin);
+            }
+        }
+        return ans;
+    }
+
 }
 
 class MyQueue {
