@@ -1,5 +1,6 @@
 package code;
 
+import javafx.util.Pair;
 import org.junit.Test;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
@@ -27,6 +28,7 @@ public class Code {
             System.out.println(i - 2);
         }
     }
+
     @Test
     public void Test1() {
         int[] dp = new int[2014];
@@ -38,7 +40,6 @@ public class Code {
         }
         System.out.println(dp[2013]);
     }
-
 
     @Test
     public void test() {
@@ -64,6 +65,17 @@ public class Code {
             right++;
         }
         System.out.println(str);
+    }
+
+    @Test
+    public void Test2() {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        while (n-- > 0) {
+            int a = in.nextInt();
+            int b = in.nextInt();
+            System.out.println(a + b);
+        }
     }
 
 }
@@ -1126,6 +1138,153 @@ class Solution {
         return ans;
     }
 
+    /*
+     * @description: 1281. 整数的各位积和之差
+     * @author: edison
+     * @date: 2023/8/9 11:19
+     * @param: [n]
+     * @return: int
+     */
+    public int subtractProductAndSum(int n) {
+        int ji = 1;
+        int sum = 0;
+        while (n > 0) {
+            ji *= n % 10;
+            sum += n % 10;
+            n /= 10;
+        }
+        return ji - sum;
+    }
+
+    /*
+     * @description: 648. 单词替换
+     * @author: edison 
+     * @date: 2023/8/9 14:55
+     * @param: [dictionary, sentence]
+     * @return: java.lang.String
+     */
+    public String replaceWords(List<String> dictionary, String sentence) {
+        TrieNode trieNode = new TrieNode();
+        for (String str : dictionary) trieNode.add(str);
+        StringBuilder sb = new StringBuilder();
+        for (String str : sentence.split(" ")) sb.append(trieNode.query(str)).append(" ");
+        return sb.substring(0, sb.length() - 1);
+    }
+
+    /*
+     * @description:
+     * @author: edison
+     * @date: 2023/8/9 16:01
+     * @param: [root]
+     * @return: int
+     */
+    public int widthOfBinaryTree(TreeNode root) {
+        int res = 1;
+        LinkedList<Pair<TreeNode, Integer>> queue = new LinkedList<>();
+        queue.add(new Pair<>(root, 1));
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size-- > 0) {
+                Pair<TreeNode, Integer> cur = queue.poll();
+                if (cur.getKey().left != null) queue.add(new Pair<>(cur.getKey().left, 2 * cur.getValue()));
+                if (cur.getKey().right != null) queue.add(new Pair<>(cur.getKey().right, 2 * cur.getValue() + 1));
+            }
+            if (queue.isEmpty()) break;
+            res = Math.max(res, queue.get(queue.size() - 1).getValue() - queue.get(0).getValue() + 1);
+        }
+        return res;
+    }
+
+}
+
+/*
+ * @description: 648. 单词替换
+ * @author: edison 
+ * @date: 2023/8/9 15:51
+ * @param: 
+ * @return: 
+ */
+class TrieNode {
+
+    class node {
+        boolean end;
+        node[] nodes = new node[26];
+    }
+    node root;
+    public TrieNode() {
+        root = new node();
+    }
+
+    void add(String s) {
+        node cur = root;
+        for (int i = 0; i < s.length(); i++) {
+            int index = s.charAt(i) - 'a';
+            if (cur.nodes[index] == null) cur.nodes[index] = new node();
+            cur = cur.nodes[index];
+        }
+        cur.end = true;
+    }
+
+    String query(String s) {
+        node cur = root;
+        for (int i = 0; i < s.length(); i++) {
+            int index = s.charAt(i) - 'a';
+            if (cur.nodes[index] == null) break;
+            if (cur.nodes[index].end) return s.substring(0, i + 1);
+            cur = cur.nodes[index];
+        }
+        return s;
+    }
+
+}
+/*
+ * @description: 208. 实现 Trie (前缀树)
+ * @author: edison 
+ * @date: 2023/8/9 15:18
+ * @param: 
+ * @return: 
+ */
+class Trie {
+
+    class trieNode {
+        private boolean end;
+        private trieNode[] tries = new trieNode[26];
+    }
+
+    trieNode root;
+    public Trie() {
+        root = new trieNode();
+    }
+
+    public void insert(String word) {
+        trieNode p = root;
+        for (int i = 0; i < word.length(); i++) {
+            int u = word.charAt(i) - 'a';
+            if (p.tries[u] == null) p.tries[u] = new trieNode();
+            p = p.tries[u];
+        }
+        p.end = true;
+    }
+
+    public boolean search(String word) {
+        trieNode p = root;
+        for (int i = 0; i < word.length(); i++) {
+            int u = word.charAt(i) - 'a';
+            if (p.tries[u] == null) return false;
+            p = p.tries[u];
+        }
+        return p.end;
+    }
+
+    public boolean startsWith(String prefix) {
+        trieNode p = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            int u = prefix.charAt(i) - 'a';
+            if (p.tries[u] == null) return false;
+            p = p.tries[u];
+        }
+        return true;
+    }
 }
 
 class MyQueue {
