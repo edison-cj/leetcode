@@ -466,26 +466,6 @@ class Solution {
     }
 
     /*
-     * @description: 49. 字母异位词分组
-     * @author: edison
-     * @date: 2023/8/2 15:42
-     * @param: [strs]
-     * @return: java.util.List<java.util.List<java.lang.String>>
-     */
-    public List<List<String>> groupAnagrams(String[] strs) {
-        HashMap<String, List<String>> map = new HashMap<>();
-        for (String str : strs) {
-            char[] ch = str.toCharArray();
-            Arrays.sort(ch);
-            String string = new String(ch);
-            List<String> list = map.getOrDefault(string, new ArrayList<>());
-            list.add(str);
-            map.put(string, list);
-        }
-        return new ArrayList<>(map.values());
-    }
-
-    /*
      * @description: 53. 最大子数组和
      * @author: edison 
      * @date: 2023/8/2 15:53
@@ -1193,6 +1173,68 @@ class Solution {
             res = Math.max(res, queue.get(queue.size() - 1).getValue() - queue.get(0).getValue() + 1);
         }
         return res;
+    }
+
+    /*
+     * @description: 1. 两数之和
+     * @author: edison
+     * @date: 2023/8/9 17:48
+     * @param: [nums, target]
+     * @return: int[]
+     */
+    public int[] twoSum(int[] nums, int target) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int num = target - nums[i];
+            if (map.containsKey(num)) return new int[]{i, map.get(num)};
+            map.put(nums[i], i);
+        }
+        return new int[]{-1, -1};
+    }
+
+    /*
+     * @description: 49. 字母异位词分组
+     * @author: edison
+     * @date: 2023/8/9 17:54
+     * @param: [strs]
+     * @return: java.util.List<java.util.List<java.lang.String>>
+     */
+    public List<List<String>> groupAnagrams(String[] strs) {
+        HashMap<String, List<String>> map = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
+            List<String> list = map.getOrDefault(key, new ArrayList<>());
+            list.add(str);
+            map.put(key, list);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /*
+     * @description: 128. 最长连续序列
+     * @author: edison 
+     * @date: 2023/8/9 18:10
+     * @param: [nums]
+     * @return: int
+     */
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> num_set = new HashSet<>();
+        for (int num : nums) num_set.add(num);
+        int len = 0;
+        for (int num : num_set) {
+            if (!num_set.contains(num - 1)) {
+                int current = num;
+                int currentLen = 1;
+                while (num_set.contains(current + 1)) {
+                    current++;
+                    currentLen++;
+                }
+                len = Math.max(len, currentLen);
+            }
+        }
+        return len;
     }
 
 }
