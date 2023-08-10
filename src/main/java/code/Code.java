@@ -1237,6 +1237,119 @@ class Solution {
         return len;
     }
 
+    /*
+     * @description: 1289. 下降路径最小和 II
+     * @author: edison 
+     * @date: 2023/8/10 9:59
+     * @param: [grid]
+     * @return: int
+     */
+    public int minFallingPathSum(int[][] grid) {
+        int n = grid.length;
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int min = Integer.MAX_VALUE;
+                for (int k = 0; k < n; k++) {
+                    if (j == k) continue;
+                    min = Math.min(min, grid[i - 1][k]);
+                }
+                grid[i][j] += min;
+            }
+        }
+        int min = grid[n - 1][0];
+        for (int i = 1; i < n; i++) {
+            min = Math.min(min, grid[n - 1][i]);
+        }
+        return min;
+    }
+
+    /*
+     * @description: 344. 反转字符串
+     * @author: edison 
+     * @date: 2023/8/10 10:00
+     * @param: [s]
+     * @return: void
+     */
+    public void reverseString(char[] s) {
+        int left = 0;
+        int right = s.length - 1;
+        while (left < right) {
+            char ch = s[left];
+            s[left++] = s[right];
+            s[right--] = ch;
+        }
+    }
+
+    /*
+     * @description: 104. 二叉树的最大深度
+     * @author: edison 
+     * @date: 2023/8/10 10:33
+     * @param: [root]
+     * @return: int
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null) return 0;
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return Math.max(left, right) + 1;
+    }
+
+    /*
+     * @description: 121. 买卖股票的最佳时机
+     * @author: edison
+     * @date: 2023/8/10 10:42
+     * @param: [prices]
+     * @return: int
+     */
+    public int maxProfit(int[] prices) {
+        int[][] dp = new int[prices.length][2];
+        dp[0][0] = -prices[0];
+        dp[0][1] = 0;
+        for (int i = 1; i < prices.length; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], -prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] + prices[i]);
+        }
+        return dp[prices.length - 1][1];
+    }
+
+    /*
+     * @description: 300. 最长递增子序列
+     * @author: edison 
+     * @date: 2023/8/10 11:04
+     * @param: [nums]
+     * @return: int
+     */
+    public int lengthOfLIS(int[] nums) {
+        int ans = 1;
+        int[] dp = new int[nums.length];
+        for (int i = 1; i < nums.length; i++) {
+            dp[i] = 1;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+            ans = Math.max(dp[i], ans);
+        }
+        return ans;
+    }
+
+    /*
+     * @description: LCR 095. 最长公共子序列
+     * @author: edison
+     * @date: 2023/8/10 11:19
+     * @param: [text1, text2]
+     * @return: int
+     */
+    public int longestCommonSubsequence(String text1, String text2) {
+        int[][] dp = new int[text1.length() + 1][text2.length() + 1];
+        for (int i = 1; i <= text1.length(); i++) {
+            for (int j = 1; j <= text2.length(); j++) {
+                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1] + 1;
+                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[text1.length()][text2.length()];
+    }
+
 }
 
 /*
