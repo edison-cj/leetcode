@@ -1350,6 +1350,168 @@ class Solution {
         return dp[text1.length()][text2.length()];
     }
 
+    /*
+     * @description: 1572. 矩阵对角线元素的和
+     * @author: edison 
+     * @date: 2023/8/11 9:40
+     * @param: [mat]
+     * @return: int
+     */
+    public int diagonalSum(int[][] mat) {
+        int sum = 0;
+        for (int i = 0; i < mat.length; i++) {
+            sum += mat[i][i] + mat[i][mat.length - i - 1];
+        }
+        if (mat.length % 2 == 1) sum -= mat[mat.length % 2][mat.length % 2];
+        return sum;
+    }
+
+    /*
+     * @description: 148. 排序链表
+     * @author: edison
+     * @date: 2023/8/11 9:53
+     * @param: [head]
+     * @return: code.ListNode
+     */
+    public ListNode sortList(ListNode head) {
+        return head == null ? null : mergeSort(head);
+    }
+    ListNode mergeSort(ListNode head) {
+        if (head.next == null) return head;
+        ListNode p = head, q = head, pre = null;
+        while (q != null && q.next != null) {
+            pre = p;
+            p = p.next;
+            q = q.next.next;
+        }
+        pre.next = null;
+        ListNode l = mergeSort(head);
+        ListNode r = mergeSort(p);
+        return merge(l, r);
+    }
+    ListNode merge(ListNode l, ListNode r) {
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+        while (l != null && r != null) {
+            if (l.val <= r.val) {
+                cur.next = l;
+                cur = cur.next;
+                l = l.next;
+            } else {
+                cur.next = r;
+                cur = cur.next;
+                r = r.next;
+            }
+        }
+        if (l != null) cur.next = l;
+        if (r != null) cur.next = r;
+        return dummy.next;
+    }
+
+    /*
+     * @description: 147. 对链表进行插入排序
+     * @author: edison 
+     * @date: 2023/8/11 10:24
+     * @param: [head]
+     * @return: code.ListNode
+     */
+    public ListNode insertionSortList(ListNode head) {
+        ListNode dummy = new ListNode(-1, head);
+        while (head != null && head.next != null) {
+            if (head.val <= head.next.val) {
+                head = head.next;
+                continue;
+            }
+            ListNode pre = dummy;
+            while (pre.next.val < head.next.val) pre = pre.next;
+            ListNode temp = head.next;
+            head.next = temp.next;
+            temp.next = pre.next;
+            pre.next = temp;
+        }
+        return dummy.next;
+    }
+
+    /*
+     * @description: 152. 乘积最大子数组
+     * @author: edison 
+     * @date: 2023/8/11 10:48
+     * @param: [nums]
+     * @return: int
+     */
+    public int maxProduct(int[] nums) {
+        int max = Integer.MIN_VALUE;
+        int imax = 1, imin = 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] < 0) {
+                int temp = imax;
+                imax = imin;
+                imin = temp;
+            }
+            imax = Math.max(imax * nums[i], nums[i]);
+            imin = Math.min(imin * nums[i], nums[i]);
+            max = Math.max(imax, max);
+        }
+        return max;
+    }
+
+    /*
+     * @description: 448. 找到所有数组中消失的数字
+     * @author: edison 
+     * @date: 2023/8/11 11:19
+     * @param: [nums]
+     * @return: java.util.List<java.lang.Integer>
+     */
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++)
+            nums[Math.abs(nums[i]) - 1] = -Math.abs(nums[Math.abs(nums[i]) - 1]);
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > 0) list.add(i + 1);
+        }
+        return list;
+    }
+
+    /*
+     * @description:
+     * @author: edison
+     * @date: 2023/8/11 11:38
+     * @param: [x, y]
+     * @return: int
+     */
+    public int hammingDistance(int x, int y) {
+        int z = x ^ y;
+        int count = 0;
+        while (z > 0) {
+            count += z & 1;
+            z >>= 1;
+        }
+        return count;
+    }
+
+    /*
+     * @description:
+     * @author: edison 
+     * @date: 2023/8/11 11:49
+     * @param: [root, targetSum]
+     * @return: int
+     */
+    public int pathSum(TreeNode root, int targetSum) {
+        HashMap<Long, Integer> map = new HashMap<>();
+        map.put(0L, 1);
+        return dfs(root, map, targetSum, 0l);
+    }
+    int dfs(TreeNode root, HashMap<Long, Integer> map, int target, long sum) {
+        if (root == null) return 0;
+        int ans = 0;
+        sum += root.val;
+        ans += map.getOrDefault(sum - target, 0);
+        map.put(sum, map.getOrDefault(sum, 0) + 1);
+        ans += dfs(root.left, map, target, sum);
+        ans += dfs(root.right, map, target, sum);
+        map.put(sum, map.get(sum) - 1);
+        return ans;
+    }
 }
 
 /*
